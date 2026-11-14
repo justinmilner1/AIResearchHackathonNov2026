@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -34,7 +35,9 @@ def sha256_text(s: str) -> str:
 def file_entry(path: Path, root: Path = REPO_ROOT) -> dict[str, Any]:
     path = Path(path)
     return {
-        "path": str(path.resolve().relative_to(root.resolve())),
+        # abspath, not resolve: data/ may be a symlinked mount (a cloud volume), and the manifest
+        # path must stay relative to the repo root either way
+        "path": str(Path(os.path.abspath(path)).relative_to(os.path.abspath(root))),
         "bytes": path.stat().st_size,
         "sha256": sha256_file(path),
     }
