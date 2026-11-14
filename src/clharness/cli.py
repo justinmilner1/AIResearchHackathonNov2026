@@ -12,6 +12,7 @@
   clh spec-hash FILE...                     idempotency key of run spec JSON files
   clh fake-rows [--out F] [--seed N]        invented result rows with planted effects
   clh export-schema [--out DIR]             JSON Schemas of the run spec and result row
+  clh run SPEC... [--modal] [--out F]       run specs, append one result row each
 """
 
 from __future__ import annotations
@@ -395,6 +396,30 @@ def cmd_fake_rows(args) -> int:
     return 0
 
 
+def cmd_run(args) -> int:
+    """Run specs and append one result row each. --modal sends them to cloud GPUs in parallel."""
+    from clharness.spec import append_row, load_spec
+
+    specs = [load_spec(p) for p in args.specs]  # validate everything before spending GPU time
+    if args.modal:
+        import subprocess
+
+        app = REPO_ROOT / "src" / "clharness" / "executor" / "modal_app.py"
+        cmd = ["modal", "run"] + (["--detach"] if args.detach else [])
+        cmd += [f"{app}::main", "--specs", ",".join(str(Path(p).resolve()) for p in args.specs),
+                "--out", str(Path(args.out).resolve()), "--gpu", args.gpu]
+        return subprocess.call(cmd, cwd=REPO_ROOT)
+    from clharness.executor.run import run_spec
+
+    worst = 0
+    for spec in specs:
+        row = run_spec(spec, backend="local")
+        append_row(args.out, row)
+        print(f"{row.status} {spec.name} {row.spec_hash[:12]} {row.reason or ''}")
+        worst = max(worst, 0 if row.status == "finished" else 1)
+    return worst
+
+
 def cmd_export_schema(args) -> int:
     from clharness.spec import json_schemas
 
@@ -420,6 +445,13 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--out", default=str(REPO_ROOT / "results" / "fake" / "rows.jsonl"))
     p.add_argument("--seed", type=int, default=0)
     p.set_defaults(fn=cmd_fake_rows)
+    p = sub.add_parser("run", help="run spec JSON files; one result row is appended per spec")
+    p.add_argument("specs", nargs="+")
+    p.add_argument("--out", default=str(REPO_ROOT / "results" / "rows.jsonl"))
+    p.add_argument("--modal", action="store_true", help="run on Modal GPUs, one per spec, in parallel")
+    p.add_argument("--gpu", default="H100", help="Modal GPU type (with --modal)")
+    p.add_argument("--detach", action="store_true", help="with --modal: keep running after this terminal closes")
+    p.set_defaults(fn=cmd_run)
     p = sub.add_parser("export-schema", help="write the run-spec and result-row JSON Schemas")
     p.add_argument("--out", default=str(REPO_ROOT / "configs" / "schema"))
     p.set_defaults(fn=cmd_export_schema)

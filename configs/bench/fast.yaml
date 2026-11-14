@@ -1,0 +1,83 @@
+# The fast bench: one run in about 30 minutes on an H100 that still forgets clearly.
+# A run spec (src/clharness/spec.py) names this file as `bench: fast` and overrides only the
+# seed, the stream, the optimizer and the techniques. Everything else is fixed here.
+#
+# DRAFT until one no-mitigation run confirms it (docs/TASKS.md, A5). After the grid starts,
+# do not change this file: runs would stop being comparable.
+#
+# What is switched off against configs/pilot/base.yaml, and what it cost per checkpoint there:
+#   SAEs, CKA, mutual-kNN and readout probes (about 85 s)   -> no capture layers, no SAEs
+#   MBPP (about 170 s)                                      -> not in the task list
+#   recoverability probe                                    -> recover_tokens: 0
+#   per-example signal log                                  -> signal_log: false
+# Technique B3 (activation-based selection) needs the signal log; it turns it on itself.
+include:
+  - ../model/gemma3-1b-pt.yaml
+
+name: fast-bench              # replaced by the spec hash for each run
+
+model:
+  capture_layers: []
+  saes: []
+
+eval:
+  suite: protected-v1         # same frozen items as the September baselines
+  item_seed: 20260905
+  batch_size: 8
+  max_length: 2048
+  include_path: configs/lm_eval_tasks
+  tier2_every_n_checkpoints: 1000000
+  lm_eval_tasks:
+    - { task: arc_easy,      n_items: 500, num_fewshot: 0, tier: 1 }
+    - { task: hellaswag,     n_items: 500, num_fewshot: 0, tier: 1 }
+    - { task: piqa,          n_items: 500, num_fewshot: 0, tier: 1 }
+    - { task: pubmedqa_pqal, n_items: 500, num_fewshot: 0, tier: 1 }
+  perplexity_slices:
+    - { name: general,    max_seqs: 256 }
+    - { name: code,       max_seqs: 256 }
+    - { name: biomedical, max_seqs: 256 }
+
+data:
+  manifest: manifests/real.json
+  seq_len: 1024
+  probe_set: probe
+  probe_max_seqs_per_domain: 64       # unused while the probe hook is off
+  domains:                            # the spec's stream replaces this list
+    - { name: code,       tokens: 10000000 }
+    - { name: biomedical, tokens: 10000000 }
+
+optim:
+  lr: 1.0e-4                          # harsh on purpose: the 1e-4 pilot lost 3.6 points in 10M code tokens
+  weight_decay: 0.1
+  betas: [0.9, 0.95]
+  warmup_steps: 50
+  schedule: constant
+  grad_clip: 1.0
+  batch_size: 64                      # 65,536 gradient tokens per step, about 153 steps per domain
+  micro_batch_size: 4
+
+train:
+  seed: 0
+  compile: false
+  precision: bf16-mixed
+  checkpoint_every_steps: 1000000     # evaluate at the base model and at domain boundaries only
+  keep_checkpoint_weights: false
+  keep_optimizer_state: false
+  output_dir: results/runs
+  device: auto
+  probe_batch_size: 16
+  cka_max_tokens: 200000
+  massive_dims_k: 3
+  mknn_tokens: 4096
+  mknn_k: 10
+  recover_tokens: 0
+  recover_lr: 2.0e-5
+  recover_domain: general
+  readout_probe: false
+  signal_log: false
+  gradient_checkpointing: false
+
+wandb:
+  project: null
+  run_name: null
+  tags: [bench-fast]

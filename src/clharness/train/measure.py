@@ -302,6 +302,18 @@ class ProbeHook(BaseHook):
         return out
 
 
-def default_hooks() -> list[BaseHook]:
+def default_hooks(cfg: Any = None) -> list[BaseHook]:
+    """The measurement hooks. Given a config, leaves out the ones it switches off: the probe
+    hook when no layers are captured, the recoverability probe at recover_tokens 0, and the
+    signal log when signal_log is false. With no config, returns all four (the pilot setup)."""
     ev = EvalHook()
-    return [ev, ProbeHook(), RecoverabilityHook(ev), SignalLogHook()]
+    if cfg is None:
+        return [ev, ProbeHook(), RecoverabilityHook(ev), SignalLogHook()]
+    hooks: list[BaseHook] = [ev]
+    if cfg.model.capture_layers:
+        hooks.append(ProbeHook())
+    if cfg.train.recover_tokens > 0:
+        hooks.append(RecoverabilityHook(ev))
+    if cfg.train.signal_log:
+        hooks.append(SignalLogHook())
+    return hooks
