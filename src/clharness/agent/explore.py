@@ -158,7 +158,8 @@ class Hypothesis(_Model):
     test_spec_hashes: list[str] = Field(default_factory=list)
     control_spec_hashes: list[str] = Field(default_factory=list)
     decision_rule: str = ""
-    # `confirmed_with_cost` and `not_replicated` are only ever set under --skeptic (see DOUBT below).
+    # `confirmed_with_cost` is set by resolve_one in every mode; `not_replicated` only under
+    # --skeptic (see DOUBT below).
     status: Literal["accepted", "rejected", "running", "confirmed", "refuted", "inconclusive",
                     "confirmed_with_cost", "not_replicated"]
     reason: str = ""  # why the gate refused it, or how the verdict was reached
@@ -672,15 +673,19 @@ def gate_one(h: ProposedHypothesis, hyp_id: str, arms: Sequence[Arm], taken: set
 
 RULE = ("Selection half. effect = mean over paired seeds of (test - control) retention change. "
         "threshold = 2 x noise SD x sqrt(2 / seeds). confirmed if the effect has the predicted "
-        "sign and exceeds the threshold (for no_difference: stays inside it); refuted if it "
-        "exceeds the threshold the other way (for no_difference: exceeds it either way); else inconclusive.")
+        "sign and exceeds the threshold; refuted if it exceeds the threshold the other way (for "
+        "no_difference: exceeds it either way); else inconclusive (for no_difference: inside it is "
+        "not an equivalence test). confirmed_with_cost if confirmed but the test arm learns legal "
+        "worse than its control by more than the 5% margin.")
 RULE_ITEMS = ("Selection half, per-item files. Outcome {outcome}: the share of {n} questions ({which}) "
               "answered wrong at the end of the run. effect = mean over paired seeds of (control - test) "
               "share, in percentage points, so positive means the test arm forgot less. threshold = "
               "2 x sqrt(p(1-p)/n x 2/seeds) x 100, with p the pooled share over the paired runs: binomial "
               "item noise. confirmed if the effect has the predicted sign and exceeds the threshold (for "
-              "no_difference: stays inside it); refuted if it exceeds the threshold the other way (for "
-              "no_difference: exceeds it either way); else inconclusive. Inconclusive when item files are missing.")
+              "no_difference: inside it is inconclusive, not an equivalence test); refuted if it exceeds the "
+              "threshold the other way (for no_difference: exceeds it either way); else inconclusive. "
+              "confirmed_with_cost if confirmed but the test arm learns legal worse than its control by more "
+              "than the 5% margin. Inconclusive when item files are missing.")
 _WHICH = {"core_forgotten": "the frozen fragile core, manifests/eval-protected-v1-core.json",
           "noncore_forgotten": "the other questions the base model answers correctly"}
 
@@ -693,7 +698,7 @@ def rule_for(outcome: str) -> str:
 
 def _verdict(effect: float, threshold: float, direction: str) -> str:
     if direction == "no_difference":
-        return "confirmed" if abs(effect) <= threshold else "refuted"
+        return "inconclusive" if abs(effect) <= threshold else "refuted"  # a failed detection confirms nothing
     want = 1 if direction == "less_forgetting" else -1
     return "confirmed" if effect * want > threshold else "refuted" if effect * want < -threshold else "inconclusive"
 
@@ -739,6 +744,10 @@ def resolve_one(h: Hypothesis, arms: Sequence[Arm], sd_points: float | None) -> 
     note = f"{what}: effect {effect:+.2f} points over {len(diffs)} paired seeds, threshold {threshold:.2f}"
     if acq_ok is False:
         note += "; learns legal worse than its control by more than the 5% margin"
+    if status == "confirmed" and acq_ok is False:
+        status = "confirmed_with_cost"
+    if h.prediction.direction == "no_difference" and status == "inconclusive":
+        note += "; no effect detected at this threshold, not an equivalence test"
     return h.model_copy(update={
         "status": status, "reason": note, "effect_points": round(effect, 3),
         "threshold_points": round(threshold, 3), "acquisition_ok": acq_ok,
@@ -751,7 +760,8 @@ def resolve_one(h: Hypothesis, arms: Sequence[Arm], sd_points: float | None) -> 
 # The first overnight run built thirty hypotheses on two-seed results it never checked. With
 # --skeptic the loop doubts its own results in three ways, two of them fixed rules:
 #   1. a confirmed result whose test arm learns legal worse than its control by more than the
-#      margin is `confirmed_with_cost`, not `confirmed`;
+#      margin is `confirmed_with_cost`, not `confirmed` (resolve_one now applies this in every
+#      mode; apply_doubt keeps it for records stored before that);
 #   2. a confirmed result has no standing until its test arm and its control each have rows at
 #      seeds 0-3. The loop plans the missing runs itself, re-resolves over every paired seed by
 #      the same rule, and a result that no longer clears the threshold is `not_replicated`. The
@@ -788,10 +798,9 @@ def apply_doubt(stored: Sequence[Hypothesis], arms: Sequence[Arm], sd_points: fl
             seeds = sorted(set(test.hashes_by_seed) & set(control.hashes_by_seed))
             again = resolve_one(h.model_copy(update={
                 "status": "running", "test_spec_hashes": [test.hashes_by_seed[s] for s in seeds]}), arms, sd_points)
-            if again.status in ("confirmed", "refuted", "inconclusive"):
-                held = again.status == "confirmed"
-                status = ("confirmed_with_cost" if again.acquisition_ok is False else "confirmed") if held \
-                    else "not_replicated"
+            if again.status in (*CONFIRMED, "refuted", "inconclusive"):
+                held = again.status in CONFIRMED
+                status = again.status if held else "not_replicated"
                 first = "" if held else (f"; the first verdict was {h.status.replace('_', ' ')} at effect "
                                          f"{h.effect_points or 0:+.2f} over two seeds")
                 h = h.model_copy(update={

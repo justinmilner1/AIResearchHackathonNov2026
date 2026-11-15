@@ -47,10 +47,10 @@ def _first_cycle(tmp_path, have, skeptic=True):
     return {h.claim: h for h in out}, said
 
 
-def test_a_confirmation_that_learns_worse_is_confirmed_with_cost_only_under_skeptic(tmp_path, have):
+def test_a_confirmation_that_learns_worse_is_confirmed_with_cost_with_or_without_skeptic(tmp_path, have):
     plain, _ = _first_cycle(tmp_path / "off", have, skeptic=False)
-    assert plain[A["claim"]].status == plain[B["claim"]].status == "confirmed"
-    assert plain[B["claim"]].acquisition_ok is False
+    assert plain[A["claim"]].status == "confirmed"
+    assert plain[B["claim"]].status == "confirmed_with_cost" and plain[B["claim"]].acquisition_ok is False
     doubted, said = _first_cycle(tmp_path / "on", have)
     assert doubted[A["claim"]].status == "confirmed" and doubted[A["claim"]].acquisition_ok is True
     assert doubted[B["claim"]].status == "confirmed_with_cost"
