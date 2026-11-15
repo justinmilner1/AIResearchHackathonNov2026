@@ -1,0 +1,12 @@
+{
+ "query": "Continual language model training: does diagonal empirical Fisher importance predict damaging update directions, and have norm-matched Fisher-filtered updates protected knowledge without reducing final weight displacement?",
+ "asked_by": "model",
+ "after": [
+  "h010",
+  "h011",
+  "h012",
+  "h013"
+ ],
+ "created_at": "2026-11-15T18:41:22+00:00",
+ "used": false
+}

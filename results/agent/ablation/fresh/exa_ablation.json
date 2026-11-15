@@ -1,0 +1,260 @@
+[
+ {
+  "condition": "with-exa",
+  "run": 0,
+  "n": 4,
+  "literature": 0,
+  "with_url": 0,
+  "own_technique": 0,
+  "accepted": 4,
+  "hypotheses": [
+   {
+    "id": "h001",
+    "origin": "follow_up",
+    "source": null,
+    "status": "accepted",
+    "technique": null,
+    "claim": "Tests localized damage: if lower-layer changes cause the residual core failures, bottom-layer freezing should protect the core beyond plain training at 3e-5. No core improvement despite substantial legal learning would count against lower-layer localized damage. Record effective weight distance: pro"
+   },
+   {
+    "id": "h002",
+    "origin": "follow_up",
+    "source": null,
+    "status": "accepted",
+    "technique": null,
+    "claim": "Tests readout drift: freeze the top 13 layers and embeddings, including the tied output weights when applicable. If movement of the protected readout is sufficient to explain residual forgetting, this should reduce core losses. Unchanged or worse core forgetting despite successful legal learning wou"
+   },
+   {
+    "id": "h003",
+    "origin": "follow_up",
+    "source": null,
+    "status": "accepted",
+    "technique": null,
+    "claim": "Tests directional interference against displacement: distillation constrains changes in predictive behaviour rather than directly penalizing total weight movement. Predict additional core protection. Protection at comparable effective weight distance and legal perplexity ratio would favour direction"
+   },
+   {
+    "id": "h004",
+    "origin": "follow_up",
+    "source": null,
+    "status": "accepted",
+    "technique": null,
+    "claim": "Tests displacement: final-only averaging leaves training gradients and the optimization trajectory unchanged, then contracts the final weights toward the averaging reference. Predict less core forgetting as effective distance from the base decreases. No core improvement despite a substantial measure"
+   }
+  ]
+ },
+ {
+  "condition": "with-exa",
+  "run": 1,
+  "n": 4,
+  "literature": 0,
+  "with_url": 0,
+  "own_technique": 1,
+  "accepted": 3,
+  "hypotheses": [
+   {
+    "id": "h001",
+    "origin": "follow_up",
+    "source": null,
+    "status": "accepted",
+    "technique": null,
+    "claim": "Tests localized damage: if lower-layer changes cause the remaining core failures, freezing the bottom 13 layers should reduce core forgetting while maintaining substantial legal learning. No core improvement would count against this lower-layer localization account. Improvement accompanied only by s"
+   },
+   {
+    "id": "h002",
+    "origin": "follow_up",
+    "source": null,
+    "status": "accepted",
+    "technique": null,
+    "claim": "Tests readout drift: if residual forgetting primarily reflects changes in the upper answer-producing layers, freezing the top 13 layers should substantially protect the core. Little or no protection despite continued legal learning would count against this account. Predict only a small benefit, cons"
+   },
+   {
+    "id": "h003",
+    "origin": "follow_up",
+    "source": null,
+    "status": "rejected",
+    "technique": "Distance-preserving top restoration",
+    "claim": "Tests readout drift against displacement. Train normally, then restore the final four blocks, final normalization, and output weights to their initial values; tied output/input embeddings are restored together. Rescale all remaining weight deltas so total base-relative L2 displacement equals its val"
+   },
+   {
+    "id": "h004",
+    "origin": "follow_up",
+    "source": null,
+    "status": "accepted",
+    "technique": null,
+    "claim": "Tests directional interference: distillation constrains functionally consequential changes rather than merely reducing the nominal learning rate. Predict that distillation on new-domain rows reduces residual core forgetting while retaining substantial legal learning. No core improvement would count "
+   }
+  ]
+ },
+ {
+  "condition": "with-exa",
+  "run": 2,
+  "n": 4,
+  "literature": 0,
+  "with_url": 0,
+  "own_technique": 1,
+  "accepted": 4,
+  "hypotheses": [
+   {
+    "id": "h001",
+    "origin": "follow_up",
+    "source": null,
+    "status": "accepted",
+    "technique": null,
+    "claim": "Tests localized damage: freezing the bottom 13 layers should reduce core forgetting beyond the low-learning-rate control if those layers contain vulnerable computations. No core improvement despite comparable legal learning would count against bottom-layer localization. Improvement accompanied only "
+   },
+   {
+    "id": "h002",
+    "origin": "follow_up",
+    "source": null,
+    "status": "accepted",
+    "technique": null,
+    "claim": "Tests directional interference against displacement: distilling the base model on all training rows should discourage functionally harmful updates rather than uniformly suppressing movement. Predict lower core forgetting. Protection at comparable legal learning and weight distance would favor direct"
+   },
+   {
+    "id": "h003",
+    "origin": "follow_up",
+    "source": null,
+    "status": "accepted",
+    "technique": null,
+    "claim": "Tests displacement: contracting the final update toward the base should protect residual core knowledge if movement magnitude remains the main bottleneck at 3e-5. Predict a modest core improvement. A substantial reduction in measured displacement without core recovery would count against displacemen"
+   },
+   {
+    "id": "h004",
+    "origin": "follow_up",
+    "source": null,
+    "status": "accepted",
+    "technique": "Distance-preserving final-block restoration",
+    "claim": "Tests readout drift against displacement. Train identically to the control, then restore the final two blocks and final normalization to their original values and expand the remaining update to preserve total base-relative L2 distance, up to parameter-rounding error. Predict core recovery despite un"
+   }
+  ]
+ },
+ {
+  "condition": "without-exa",
+  "run": 0,
+  "n": 4,
+  "literature": 0,
+  "with_url": 0,
+  "own_technique": 0,
+  "accepted": 4,
+  "hypotheses": [
+   {
+    "id": "h001",
+    "origin": "follow_up",
+    "source": null,
+    "status": "accepted",
+    "technique": null,
+    "claim": "Tests readout drift: freezing the top four layers and embeddings should substantially reduce core forgetting if a small output-side region is the principal bottleneck. Little or no reduction, while legal perplexity improvement remains comparable to control, counts against this account. Protection ob"
+   },
+   {
+    "id": "h002",
+    "origin": "follow_up",
+    "source": null,
+    "status": "accepted",
+    "technique": null,
+    "claim": "Tests localized damage against readout drift. Substantial core protection from freezing the bottom four layers would support an early-layer contribution, especially if it exceeds the separately proposed top-four intervention with the same embedding freeze. No protection at comparable legal learning "
+   },
+   {
+    "id": "h003",
+    "origin": "follow_up",
+    "source": null,
+    "status": "accepted",
+    "technique": null,
+    "claim": "Tests directional interference: distillation on all training rows constrains changes to the base model's predictive function rather than explicitly constraining weight distance. Predict core protection beyond the low-rate control. Protection with comparable legal learning and comparable or greater e"
+   },
+   {
+    "id": "h004",
+    "origin": "follow_up",
+    "source": null,
+    "status": "accepted",
+    "technique": null,
+    "claim": "Tests displacement as an explanation of residual forgetting. Final weight averaging should reduce effective distance from the base and consequently reduce core forgetting if total movement is the controlling variable. Unchanged or worse core forgetting despite a verified distance reduction counts ag"
+   }
+  ]
+ },
+ {
+  "condition": "without-exa",
+  "run": 1,
+  "n": 4,
+  "literature": 0,
+  "with_url": 0,
+  "own_technique": 0,
+  "accepted": 3,
+  "hypotheses": [
+   {
+    "id": "h001",
+    "origin": "follow_up",
+    "source": null,
+    "status": "accepted",
+    "technique": null,
+    "claim": "Tests readout drift: freezing the top three blocks and the tied embedding/output weights should reduce core forgetting even at lr 3e-5. Little or no improvement despite comparable legal learning would count against the claim that output-side drift is the main remaining bottleneck. Protection accompa"
+   },
+   {
+    "id": "h002",
+    "origin": "follow_up",
+    "source": null,
+    "status": "accepted",
+    "technique": null,
+    "claim": "Tests localized damage in lower layers: freezing the bottom thirteen blocks should reduce the residual core forgetting while leaving substantial legal learning available in the upper blocks. No core improvement at comparable legal perplexity would count against lower-layer damage being the remaining"
+   },
+   {
+    "id": "h003",
+    "origin": "follow_up",
+    "source": null,
+    "status": "rejected",
+    "technique": null,
+    "claim": "Tests the capacity account's prediction that giving adaptation its own additional parameters relieves overwriting: rank-256 attention-and-MLP LoRA should protect the core while retaining legal learning. Control-like core forgetting despite comparable legal perplexity would count against this adapter"
+   },
+   {
+    "id": "h004",
+    "origin": "follow_up",
+    "source": null,
+    "status": "accepted",
+    "technique": null,
+    "claim": "Tests directional interference: all-row distillation constrains function-changing update directions throughout the network rather than protecting a particular anatomical region. Reduced core forgetting with comparable legal learning and comparable effective weight distance would favor directional in"
+   }
+  ]
+ },
+ {
+  "condition": "without-exa",
+  "run": 2,
+  "n": 4,
+  "literature": 0,
+  "with_url": 0,
+  "own_technique": 0,
+  "accepted": 3,
+  "hypotheses": [
+   {
+    "id": "h001",
+    "origin": "follow_up",
+    "source": null,
+    "status": "accepted",
+    "technique": null,
+    "claim": "Tests readout drift: if the remaining core failures arise mainly in the final transformation into answers, freezing the top three layers should reduce core forgetting while preserving substantial legal learning. Little or no rescue would count against this narrow readout-drift account. Compare the p"
+   },
+   {
+    "id": "h002",
+    "origin": "follow_up",
+    "source": null,
+    "status": "accepted",
+    "technique": null,
+    "claim": "Tests localized damage in early processing: protecting just the bottom three layers should rescue core questions if those layers are the principal remaining damage site. No rescue despite continued legal learning would count against that localization. My prediction is no rescue; combined with a bene"
+   },
+   {
+    "id": "h003",
+    "origin": "follow_up",
+    "source": null,
+    "status": "accepted",
+    "technique": null,
+    "claim": "Tests directional interference against a strict capacity account: distillation constrains functionally important changes without adding trainable room. Reduced core forgetting with legal perplexity near the control would favor directional interference and count against the claim that extra capacity "
+   },
+   {
+    "id": "h004",
+    "origin": "follow_up",
+    "source": null,
+    "status": "rejected",
+    "technique": null,
+    "claim": "Tests capacity: rank-8 adapters provide trainable parameters without overwriting the frozen backbone. If this extra space removes the remaining conflict, core forgetting should fall substantially at comparable legal learning. No improvement despite comparable legal perplexity would count against the"
+   }
+  ]
+ }
+]

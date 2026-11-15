@@ -1,0 +1,164 @@
+[
+ {
+  "condition": "with-exa",
+  "run": 0,
+  "n": 1,
+  "literature": 0,
+  "with_url": 0,
+  "own_technique": 1,
+  "accepted": 0,
+  "hypotheses": [
+   {
+    "id": "h010",
+    "origin": "follow_up",
+    "source": null,
+    "status": "rejected",
+    "technique": "Post-training restoration of the base model's final four transformer blocks",
+    "claim": "Tests readout drift against damage to earlier representations. Unlike freezing, post-training restoration allows unrestricted adaptation and then tests whether the base model's upper computation can still read the adapted lower representations. Predict 15 percentage points less core forgetting than "
+   }
+  ]
+ },
+ {
+  "condition": "with-exa",
+  "run": 1,
+  "n": 1,
+  "literature": 0,
+  "with_url": 0,
+  "own_technique": 1,
+  "accepted": 1,
+  "hypotheses": [
+   {
+    "id": "h010",
+    "origin": "follow_up",
+    "source": null,
+    "status": "accepted",
+    "technique": "Post-training top-block restoration at preserved global displacement",
+    "claim": "Tests readout drift against displacement. Train identically to the control, then restore the top four transformer blocks and terminal normalization to their base values, rescaling all remaining weight changes to preserve the pre-restoration total L2 distance from base. Predict 12 percentage points l"
+   }
+  ]
+ },
+ {
+  "condition": "with-exa",
+  "run": 2,
+  "n": 2,
+  "literature": 0,
+  "with_url": 0,
+  "own_technique": 1,
+  "accepted": 0,
+  "hypotheses": [
+   {
+    "id": "h010",
+    "origin": "follow_up",
+    "source": null,
+    "status": "rejected",
+    "technique": "Post-training restoration of top four blocks and final normalization",
+    "claim": "Tests readout drift: if the residual forgetting at lr 3e-5 is largely reversible output-side drift, restoring the base model's top four blocks and final normalization after legal training should reduce core forgetting by approximately 15 percentage points. Improvement below 5 points, with legal perp"
+   },
+   {
+    "id": "h011",
+    "origin": "follow_up",
+    "source": null,
+    "status": "rejected",
+    "technique": null,
+    "claim": "Tests localized damage: freezing the bottom nine and top nine blocks leaves the middle eight blocks available for adaptation. Predict 18 percentage points less core forgetting than unrestricted training at lr 3e-5, conditional on legal perplexity ratio at most 0.80. Improvement below 5 points at tha"
+   }
+  ]
+ },
+ {
+  "condition": "without-exa",
+  "run": 0,
+  "n": 3,
+  "literature": 0,
+  "with_url": 0,
+  "own_technique": 1,
+  "accepted": 2,
+  "hypotheses": [
+   {
+    "id": "h010",
+    "origin": "follow_up",
+    "source": null,
+    "status": "accepted",
+    "technique": "Post-training restoration of the final four transformer blocks",
+    "claim": "Tests readout drift versus damage to internal knowledge. Restore the final four transformer blocks to their untrained values only after legal training, leaving embeddings, the output head, and all lower blocks untouched. Predict 15 percentage points less core forgetting than the control. Improvement"
+   },
+   {
+    "id": "h011",
+    "origin": "follow_up",
+    "source": null,
+    "status": "accepted",
+    "technique": null,
+    "claim": "Tests localized damage, specifically a narrow bottom-four-block damage site. Freeze only the bottom four transformer blocks, leaving embeddings and all higher blocks trainable. Predict 12 percentage points less core forgetting than the control, retaining a substantial part of the established bottom-"
+   },
+   {
+    "id": "h012",
+    "origin": "follow_up",
+    "source": null,
+    "status": "rejected",
+    "technique": null,
+    "claim": "Tests directional interference: constraining updates to low-rank attention adaptations should avoid harmful directions that remain accessible to full fine-tuning at the same low learning rate. Predict 15 percentage points less core forgetting with rank-eight attention LoRA. Improvement below 5 point"
+   }
+  ]
+ },
+ {
+  "condition": "without-exa",
+  "run": 1,
+  "n": 3,
+  "literature": 0,
+  "with_url": 0,
+  "own_technique": 1,
+  "accepted": 3,
+  "hypotheses": [
+   {
+    "id": "h010",
+    "origin": "follow_up",
+    "source": "The recorded top-four-layer-plus-embedding freezing result motivates separating post-training repair from preventive protection and removing the embedding intervention.",
+    "status": "accepted",
+    "technique": "Restore base top four blocks after legal training",
+    "claim": "Tests readout drift through post-training repair rather than preventive freezing. Train normally, then restore the final four transformer blocks to their base-model values after legal training; leave embeddings, the output head, and all other blocks untouched. Predict 12 percentage points less core "
+   },
+   {
+    "id": "h011",
+    "origin": "follow_up",
+    "source": "The recorded bottom-13-block freezing experiment reduced core forgetting by 19.83 percentage points at lr 3e-5; this tests how narrowly that protection can be localized.",
+    "status": "accepted",
+    "technique": null,
+    "claim": "Tests localized damage at an early representational bottleneck. Freeze only the bottom two blocks, leaving embeddings and every higher block trainable. Predict 12 percentage points less core forgetting with legal perplexity ratio at most 0.80. Improvement below 5 points at comparable legal learning "
+   },
+   {
+    "id": "h012",
+    "origin": "follow_up",
+    "source": "General replay has not reliably protected retention in the supplied table; code replay tests whether rehearsal must target the previously trained domain.",
+    "status": "accepted",
+    "technique": null,
+    "claim": "Tests directional interference through old-domain-specific rehearsal rather than generic replay. Replace 5% of training rows with code replay, preserving the token and optimizer-step budget. Predict 10 percentage points less core forgetting, conditional on legal perplexity ratio at most 0.80. Improv"
+   }
+  ]
+ },
+ {
+  "condition": "without-exa",
+  "run": 2,
+  "n": 2,
+  "literature": 0,
+  "with_url": 0,
+  "own_technique": 1,
+  "accepted": 0,
+  "hypotheses": [
+   {
+    "id": "h010",
+    "origin": "follow_up",
+    "source": "The recorded top-layer-plus-embedding freezing result leaves both embedding effects and training-time rerouting unresolved.",
+    "status": "rejected",
+    "technique": "Post-training restoration of the top four transformer blocks",
+    "claim": "Tests readout drift against damage to internal representations. Unlike freezing during training, post-training restoration cannot redirect learning into other layers. Predict 15 percentage points less core forgetting after restoring the top four blocks to their base weights, provided legal perplexit"
+   },
+   {
+    "id": "h011",
+    "origin": "follow_up",
+    "source": "Established high-rate LoRA protection and the remaining 48.3% core forgetting under plain training at 3e-5 motivate testing whether their protection is redundant.",
+    "status": "rejected",
+    "technique": null,
+    "claim": "Tests directional interference: restricting effective updates to low-rank directions may protect fragile knowledge beyond the protection supplied by a lower learning rate. Predict 15 percentage points less core forgetting than plain training at 3e-5, conditional on legal perplexity ratio at most 0.8"
+   }
+  ]
+ }
+]

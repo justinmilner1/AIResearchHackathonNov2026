@@ -1,0 +1,300 @@
+{
+  "claims": [],
+  "candidates": [
+    {
+      "name": "SCALE width expansion",
+      "description": "SCALE inserts lightweight width expansions into linear modules while freezing all pretrained parameters to preserve the base model's functionality during continual pre-training. It needs a model-construction hook to install the expansion modules and a trainable-parameter selection hook to optimize only the added parameters.",
+      "mechanism": "Allocate new capacity without updating pretrained weights, preserving residual and attention topology; the source also identifies preservation-oriented initialization as a design principle.",
+      "why_not_in_catalog": "Layer freezing and low-rank adapters cannot express the described width-expansion architecture and its initialization.",
+      "expected_effect": "Reduce forgetting by avoiding changes to pretrained parameters while accommodating new knowledge in added capacity; the supplied excerpt gives no numerical retention gain.",
+      "params": {},
+      "est_cost_multiplier": 1.2,
+      "source_ids": [
+        "src-0cdcfc142df3"
+      ],
+      "review": "pending",
+      "author": "scout",
+      "created_at": "2026-11-15T17:11:37+00:00"
+    },
+    {
+      "name": "Spaced Repetition Training",
+      "description": "Spaced Repetition Training treats continual pre-training as adaptive review scheduling, selecting when individual historical examples return instead of relying on a fixed mixture and uniform sampling. It needs a stateful sampler hook that maintains per-example review state and schedules subsequent rehearsals.",
+      "mechanism": "Account for differences in how quickly examples are forgotten when scheduling historical-example reviews; the supplied excerpt does not specify the scheduling formula.",
+      "why_not_in_catalog": "Catalog replay supports fixed mixture shares and random, loss, or activation-novelty selection, but not persistent per-example review schedules.",
+      "expected_effect": "Target retention more efficiently by reviewing examples according to their forgetting behavior rather than uniformly; the supplied excerpt gives no numerical retention gain.",
+      "params": {},
+      "est_cost_multiplier": 1.1,
+      "source_ids": [
+        "src-92c70b1e8400"
+      ],
+      "review": "pending",
+      "author": "scout",
+      "created_at": "2026-11-15T17:11:37+00:00"
+    }
+  ],
+  "rejected": [],
+  "sources": [
+    {
+      "id": "src-afb587c61e2c",
+      "query": "research papers on mitigating catastrophic forgetting during continual pre-training of language models, 2025 and 2026",
+      "url": "https://arxiv.org/abs/2508.01908",
+      "title": "Revisiting Replay and Gradient Alignment for Continual Pre-Training of Large Language Models",
+      "snippet": "# Revisiting Replay and Gradient Alignment for Continual Pre-Training of Large Language Models\n\narXiv:2508.01908. cs.LG, cs.AI, cs.CL. Submitted 2025-08-03.\n\n...\n\n## Abstract\n\nTraining large language models (LLMs) typically involves pre-training on massive corpora, only to restart the process entirely when new data becomes available. A more efficient and resource-conserving approach would be continual pre-training, where models are updated with new data rather than retraining from scratch. However, the introduction of new data often causes distribution shifts, leading to performance degradation on previously learned tasks. In this paper, we take a deeper look at two popular proposals for addressing this distribution shift within the continual learning literature: experience replay and gradient alignment. We consider continual pre-training of models within the Llama family of architectures at a large scale across languages with 100 billion tokens of training data in each language, finding that both replay and gradient alignment lead to more stable learning without forgetting. This conclusion holds both as we vary the model scale and as we vary the number and diversity of tasks. Moreover, we are the first to demonstrate the effectiveness of gradient alignment techniques in the context of LLM pre-training and propose an efficient implementation of meta-experience replay (MER) (Riemer et al., 2019a) that imbues experience replay with the benefits of gradient alignment despite neg",
+      "published": "2025-08-03T20:07:15.000Z",
+      "retrieved_at": "2026-11-15T17:11:23+00:00",
+      "used": false
+    },
+    {
+      "id": "src-261277d8f6ec",
+      "query": "research papers on mitigating catastrophic forgetting during continual pre-training of language models, 2025 and 2026",
+      "url": "https://arxiv.org/html/2606.00284",
+      "title": "Parameter Alignment Mitigates Catastrophic Forgetting in Multilingual Expert Language Models",
+      "snippet": "# Parameter Alignment Mitigates Catastrophic Forgetting in Multilingual Expert Language Models\n\n Sanchit Ahuja & Terra Blevins Northeastern University {ahuja.sanc,t.blevins}@northeastern.edu \n\n###### Abstract\n\nWhile continual pretraining (CPT) is a practical way to extend large language models to new languages, naïve finetuning on targeted data erodes existing capabilities through catastrophic forgetting. Organizing training around language families reduces cross-language interference but cannot alone prevent forgetting of the general knowledge needed for downstream tasks. We link this forgetting to parameter drift in multilingual CPT and present a suite of five layer-aware parameter alignment strategies: hard layer freezing, soft regularization, post-hoc weight reversion, and model merging. We systematically compare our alignment strategies against two unregularized CPT baselines on benchmarks spanning 32 training languages from five language families, plus held-out languages, across four evaluation axes: perplexity, reading comprehension, physical reasoning, and translation. Parameter alignment substantially reduces forgetting at minimal cost to language acquisition: layer freezing and regularization best preserve comprehension, whereas post-hoc reversion yields the strongest translation gains. Together, these results map the acquisition–forgetting frontier for family-expert CPT and offer practical deployment guidelines pairing each strategy to the tasks it best serves.\n\n..",
+      "published": "2026-05-29T00:00:00.000Z",
+      "retrieved_at": "2026-11-15T17:11:23+00:00",
+      "used": false
+    },
+    {
+      "id": "src-88fcebbd6dd7",
+      "query": "research papers on mitigating catastrophic forgetting during continual pre-training of language models, 2025 and 2026",
+      "url": "https://aclanthology.org/2025.acl-long.105.pdf",
+      "title": "Exploring Forgetting in Large Language Model Pre-Training",
+      "snippet": "Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), pages 2112–2127 July 27 - August 1, 2025 ©2025 Association for Computational Linguistics\n\n## Exploring Forgetting in Large Language Model Pre-Training\n\n...\n\n### Abstract\n\nCatastrophic forgetting remains a formidable obstacle to building an omniscient model in large language models (LLMs). Despite the pioneering research on task-level forgetting in LLM fine-tuning, there is scant focus on for getting during pre-training. We systematically explored the existence and measurement of for getting in pre-training, questioning traditional metrics such as perplexity (PPL) and introduc ing new metrics to better detect entity memory retention. Based on our revised assessment of forgetting metrics, we explored low-cost, straightforward methods to mitigate forgetting during the pre-training phase. In addition, we carefully analyzed the learning curves, offering insights into the dynamics of forgetting. Exten sive evaluations and analyses on forgetting of pre-training could facilitate future research on LLMs.\n\n...\n\nWithin a standard pre-training setting, we present several simple and lightweight memory replay strategies, and show that simple and cost effective replay strategies can effectively mitigate forgetting. Finally, drawing an analogy to the hu man memory curve, we examine how the metrics of recently learned samples evolve over the course of ... We then explore the impact",
+      "published": null,
+      "retrieved_at": "2026-11-15T17:11:23+00:00",
+      "used": false
+    },
+    {
+      "id": "src-4dff8f79fb46",
+      "query": "research papers on mitigating catastrophic forgetting during continual pre-training of language models, 2025 and 2026",
+      "url": "https://openreview.net/forum?id=Mg6pVmTWlo&referrer=%5Bthe+profile+of+Michael+Pilcer%5D%28%2Fprofile%3Fid%3D%7EMichael_Pilcer1%29",
+      "title": "Mitigating Catastrophic Forgetting with Context-aware Continual Pretraining for LLMs | OpenReview",
+      "snippet": "## Mitigating Catastrophic Forgetting with Context-aware Continual Pretraining for LLMs\n\n### Martin Alexandre, Michael Pilcer, Charles-Étienne Joseph, Genta Indra Winata, Shi-Xiong Zhang, Sambit Sahu, Milind Naphade \n\n16 Sept 2025 (modified: 03 Dec 2025) ICLR 2026 Conference Withdrawn Submission Everyone Revisions BibTeX CC BY 4.0\n\nTL;DR: We introduce a new method called Context-aware Continual Pretraining to mitigate catastrophic when continually pretraining Large Language Models.\n\nAbstract: Retraining large language models (LLMs) from scratch to include novel, internal or domain-specific knowledge is prohibitively computationally expensive. Therefore, practitioners rely on continual pretraining to adapt existing pretrained models to new data. As the model's parameters are updated to assimilate new information, it can abruptly lose proficiency on previously learned domains, a phenomenon known as catastrophic forgetting. To address this issue, we propose Context-aware Continual Pretraining (CA-CPT), a simple technique that provides the model with sample-specific context before adapting its weights to new content in order to smoothen the training loss. Our empirical results demonstrate that CA-CPT has comparable or superior performance on new domain data while consistently mitigating the forgetting of both general knowledge and specialized instruction-following abilities. We show that our method is broadly applicable, is orthogonal to existing catastrophic forgetting mitigatio",
+      "published": "2025-10-08T01:17:49.000Z",
+      "retrieved_at": "2026-11-15T17:11:23+00:00",
+      "used": false
+    },
+    {
+      "id": "src-92c70b1e8400",
+      "query": "research papers on mitigating catastrophic forgetting during continual pre-training of language models, 2025 and 2026",
+      "url": "https://arxiv.org/html/2608.17530",
+      "title": "When to Review: Spaced Repetition for Continual Pre-Training of Language Models",
+      "snippet": "###### Abstract\n\nContinual pre-training of large language models must acquire new information without erasing old knowledge. Existing replay methods often choose a global old/new mixture and sample uniformly, ignoring that examples differ in how quickly they are forgotten. We formulate continual pre-training as adaptive review scheduling: the training loop should decide not only how much history to replay, but which examples should return at each step. We introduce Spaced Repetition Training (SRT), a continual learning framework inspired by cognitive science, which schedules sample-rehearsal using the SuperMemo-2 (SM-2) algorithm. SRT maintains per-example review state, maps per-example perplexity to a recall-quality signal, and schedules historical examples for retention and new examples for consolidation while leaving the model, objective, and optimizer unchanged. On temporally separated Wikipedia and code corpora, SRT improves the stability-plasticity trade-off, recovering 5 to 37 percentage points of old-knowledge accuracy lost by naive continual pre-training across model scales while preserving or improving new-knowledge acquisition. At larger scale, SRT preserves broad benchmark performance that naive continual pre-training and uniform replay substantially degrade. Experiments with vision and tabular data further suggest that the scheduling principle extends beyond language when paired with an appropriate recall signal.\n\n...\n\nWe introduce Spaced Repetition Training (SRT",
+      "published": "2026-08-18T00:00:00.000Z",
+      "retrieved_at": "2026-11-15T17:11:23+00:00",
+      "used": true
+    },
+    {
+      "id": "src-6c93c5aa1f25",
+      "query": "research papers on mitigating catastrophic forgetting during continual pre-training of language models, 2025 and 2026",
+      "url": "https://arxiv.org/html/2509.01213",
+      "title": "Mitigating Catastrophic Forgetting in Continual Learning through Model Growth",
+      "snippet": "# Mitigating Catastrophic Forgetting in Continual Learning through Model Growth\n\n...\n\n###### Abstract\n\nCatastrophic forgetting is a significant challenge in continual learning, in which a model loses prior knowledge when it is fine-tuned on new tasks. This problem is particularly critical for large language models (LLMs) undergoing continual learning, as retaining performance across diverse domains is important for their general utility. In this paper, we explore model growth, a promising strategy that leverages smaller models to expedite and structure the training of larger ones for mitigating the catastrophic forgetting problem. Although growth-based pretraining, particularly via transformer stacking, has shown promise in accelerating convergence, its impact on forgetting remains under-explored. Therefore, we evaluate whether growth-based models can retain previously learned capabilities more effectively across a sequence of fine-tuning tasks involving domain knowledge, reasoning, reading comprehension, and bias. Our findings show that both models—one trained with growth (StackLLM) and one without (LLM)—exhibit improvements in domain knowledge. However, reasoning and reading comprehension degrade over time, indicating signs of catastrophic forgetting. StackLLM consistently shows less degradation, especially in reading comprehension, suggesting enhanced retention capabilities. Interestingly, in bias evaluation, the baseline LLM becomes progressively more neutral with continu",
+      "published": "2025-09-01T00:00:00.000Z",
+      "retrieved_at": "2026-11-15T17:11:23+00:00",
+      "used": false
+    },
+    {
+      "id": "src-6fae4261504f",
+      "query": "research papers on mitigating catastrophic forgetting during continual pre-training of language models, 2025 and 2026",
+      "url": "https://openreview.net/forum?id=B5lomRnzlA&referrer=%5Bthe+profile+of+Lawrence+Feng%5D%28%2Fprofile%3Fid%3D%7ELawrence_Feng1%29",
+      "title": "Mix Early, Forget Less: Data Mixing During Pretraining Builds Resistance to Forgetting | OpenReview",
+      "snippet": "## Mix Early, Forget Less: Data Mixing During Pretraining Builds Resistance to Forgetting\n\n### Lawrence Feng, Gaurav Rohit Ghosal, Jacob Mitchell Springer, Ziqian Zhong, Aditi Raghunathan \n\nPublished: 02 Mar 2026, Last Modified: 16 Mar 2026 ICLR 2026 Workshop GRaM Poster Everyone Revisions BibTeX CC BY 4.0\n\n...\n\nTL;DR: Data Mixing During Pretraining Builds Resistance to Forgetting\n\nAbstract: After web-scale pretraining, language models are often further trained to add domain skills and behaviors, and later fine-tuned to ingest new data or meet specific downstream requirements. A persistent challenge in such sequential pipelines is catastrophic forgetting: later training can degrade previously learned capabilities. Prior mitigation strategies largely focus on fine-tuning-time interventions and treat the upstream training procedure as fixed. We show that upstream data placement matters: mixing a small amount (a few \\% of the overall pretraining mixture) of capability-relevant data into pretraining builds resistance to forgetting, yielding substantially better learning–retention tradeoffs under subsequent training than introducing the domain only after pretraining. We demonstrate this effect across multiple settings, including specialized domain adaptation and instruction tuning. We also study algorithmic choices during continual pretraining and find that dropout and data replay provide additional gains that are consistently complementary to pretraining-time mixing.",
+      "published": "2026-03-02T09:51:23.000Z",
+      "retrieved_at": "2026-11-15T17:11:23+00:00",
+      "used": false
+    },
+    {
+      "id": "src-c0bcd221d23c",
+      "query": "research papers on mitigating catastrophic forgetting during continual pre-training of language models, 2025 and 2026",
+      "url": "https://aclanthology.org/2026.emnlp-main.528.pdf",
+      "title": "Plasticity without Collapse: Plasticity-Inducing Control Optimizer for Cross-Lingual Continual Pre-Training",
+      "snippet": "##### Abstract\n\nLanguage models (LMs) operate in evolving environments where adapting to new domains and linguistic shifts is critical. Continual pre training (CPT) addresses this but introduces a strict stability-plasticity dilemma. While cur rent approaches manage this via data replay or architectural changes, they largely treat the op timizer as a static component. We propose the Plasticity-Inducing Control Optimizer (PICO) to tackle this dilemma directly at the update level. The optimizer defines a utility-gated up date together with a stochastic perturbation path controlled by periodic spectral sensitivity checks. Structural flags suppress the perturba tion path while leaving the protected-gradient update active. Across the evaluated legal and medical streams, PICO exhibits a favorable stability–plasticity trade-off through optimizer level control, while incurring a measurable spectral-monitoring cost. Code is available at https://github.com/infonet-gist/info net-ai-pico.\n\n...\n\nAs shown in Figure 1, PICO is the only evaluated method with positive FWT while also at taining the lowest WCR, suggesting that optimizer level control can improve transfer without incurring severe worst-case degradation.",
+      "published": null,
+      "retrieved_at": "2026-11-15T17:11:23+00:00",
+      "used": false
+    },
+    {
+      "id": "src-0cdcfc142df3",
+      "query": "research papers on mitigating catastrophic forgetting during continual pre-training of language models, 2025 and 2026",
+      "url": "https://arxiv.org/pdf/2511.03270v1.pdf",
+      "title": "SCALE: Upscaled Continual Learning of Large Language Models",
+      "snippet": "##### Abstract\n\nWe revisit continual pre-training for large language mod els and argue that progress now depends more on scaling the right structure than on scaling parameters alone. We in troduce SCALE, a width-upscaling architecture that inserts lightweight expansion into linear modules while freezing all pre-trained parameters. This preserves the residual and at tention topologies and increases capacity without perturbing the base model’s original functionality. SCALE is guided by two principles: Persistent Preservation, which maintains the base model’s behavior via preservation-oriented initial ization and freezing of the pre-trained weights, and Collab orative Adaptation, which selectively trains a subset of ex pansion components to acquire new knowledge with min imal interference. We instantiate these ideas as SCALE Preserve (preservation-first), SCALE-Adapt (adaptation first), and SCALE-Route, an optional routing extension that performs token-level routing between preservation and adap tation heads. On a controlled synthetic biography benchmark, SCALE mitigates the severe forgetting observed with depth expansion while still acquiring new knowledge. In contin ual pre-training on a Korean corpus, SCALE variants achieve less forgetting on English evaluations and competitive gains on Korean benchmarks, with these variants offering the best overall stability–plasticity trade-off. Accompanying analysis clarifies when preservation provably holds and why the inter play between",
+      "published": null,
+      "retrieved_at": "2026-11-15T17:11:23+00:00",
+      "used": true
+    },
+    {
+      "id": "src-2be56cbe3bdb",
+      "query": "research papers on mitigating catastrophic forgetting during continual pre-training of language models, 2025 and 2026",
+      "url": "https://doi.org/10.48550/arxiv.2610.22293",
+      "title": "Towards Continual Learning: Mitigating Forgetting With Subspace Tuning",
+      "snippet": "## Abstract\n\nLarge language models (LLMs) acquire new skills through fine-tuning, but it can destroy capabilities they already have: catastrophic forgetting remains a central obstacle to continual learning in LLMs. Recent works connect forgetting to how far, and along which directions, fine-tuning moves the weights. On-policy methods such as reinforcement learning and on-policy distillation avoid updating the principal singular directions of weight matrices and thus forget less. In contrast, SFT concentrates updates along these directions and is susceptible to catastrophic forgetting. In this work, we introduce Subspace Tuning (SST), which restricts each weight update to the bottom singular subspace, eliminating changes along the principal directions. SST is optimizer-agnostic and composes well with fine-tuning recipes including SFT and self-distillation. SST combines tight subspace protection, dense gradient estimation, and a simple refresh mechanism, enabling stronger learning than prior orthogonal fine-tuning methods. With these mechanisms, protecting as much as 99% of the weight subspace substantially improves retention while preserving strong target-task performance. This behavior strengthens with model and data size and nearly eliminates forgetting in the large-model regime. SST also keeps the model close to its base distribution, inducing 2-4× less KL drift than the baseline recipes. Overall, SST advances the learning-forgetting Pareto frontier, making it a practical d",
+      "published": "2026-10-15T00:00:00.000Z",
+      "retrieved_at": "2026-11-15T17:11:23+00:00",
+      "used": false
+    },
+    {
+      "id": "src-c186dc60ca68",
+      "query": "new method to reduce forgetting when continually pretraining an LLM on a new domain",
+      "url": "https://arxiv.org/abs/2610.22293v1",
+      "title": "Towards Continual Learning: Mitigating Forgetting With Subspace Tuning",
+      "snippet": "We introduce Subspace Tuning (SST), which restricts weight updates to a non-principal subspace of the weight spectrum. Concretely, let $\\Delta W$ be the optimizer’s final update to a weight matrix $W$, and let $U_{k}$ and $V_{k}$ contain the top-$k$ left and right singular vectors of $W$. SST applies the projected update\n\n$\\Pi(\\Delta W)\\;=\\;(I-U_{k}U_{k}^{\\top})\\,\\Delta W\\,(I-V_{k}V_{k}^{\\top})$\n\n(1)\n\nin place of $\\Delta W$. The two projectors remove from the update any component along the principal directions, on the output and input sides respectively, so every applied step stays in the non-principal subspace (Sec. 2.1). Importantly, SST constrains the final optimizer update rather than the raw gradient. Stateful optimizers such as Adam rescale the gradient coordinate-wise before it reaches the weights, so a projected gradient does not produce a projected step and part of the update returns to the directions we mean to freeze (Sec. 2). Because the projection acts on the applied update, SST is optimizer-agnostic and composes with any fine-tuning recipe, with no other change to training.\n\n...\n\n- •\n\nSST learns new tasks and retains prior capabilities. Despite protecting the top $99\\%$ of singular directions, SST matches the target-task accuracy of unconstrained fine-tuning, while retaining the prior capabilities that standard fine-tuning severely degrade (Figure 1). This behavior holds across Science, Medicine, Pathology, Finance, and Tool Use, across SFT and SDFT, and with bo",
+      "published": "2026-10-15T00:00:00.000Z",
+      "retrieved_at": "2026-11-15T17:11:24+00:00",
+      "used": false
+    },
+    {
+      "id": "src-a2ba4550c3f6",
+      "query": "new method to reduce forgetting when continually pretraining an LLM on a new domain",
+      "url": "https://arxiv.org/html/2610.02593",
+      "title": "Fisher-Guided Submodular Data Selection for Continual Pre-Training of Large Language Models",
+      "snippet": "Data selection is already a central bottleneck in large-language-model training, where web-scale corpora are noisy and token budgets are finite. In continual pre-training (CPT), it becomes a forgetting-control problem: a poorly chosen target-domain corpus can overwrite capabilities encoded in the pretrained checkpoint. Existing CPT practice either scores candidates with parameter-agnostic scalars such as perplexity, or mitigates forgetting by spending many extra general-domain replay tokens. Neither strategy directly asks how training on a candidate will move the model parameters. We show that loss-based selection causes the post-CPT Fisher diagonal to drift downward on exactly the high-Fisher coordinates the pretrained model had committed to, while leaving low-Fisher coordinates largely untouched. This asymmetry exposes a parameter-space mechanism for catastrophic forgetting. Motivated by this observation, we propose a Fisher-aware CPT selector that decomposes each candidate’s gradient into an anchor component, which measures perturbation along committed parameter directions, and a frontier component, which measures update capacity in unconstrained low-Fisher subspaces. We aggregate these signals with a log-determinant submodular objective and optimize it in a single pass using a scalable streaming data selection pipeline. On TinyLlama-1.1B and Llama-3.1-8B CPT over medical data, our selector improves target-domain quality while bounding forgetting on held-out pretraining be",
+      "published": null,
+      "retrieved_at": "2026-11-15T17:11:24+00:00",
+      "used": false
+    },
+    {
+      "id": "src-f72cb4186da9",
+      "query": "new method to reduce forgetting when continually pretraining an LLM on a new domain",
+      "url": "https://arxiv.org/pdf/2510.10071v1",
+      "title": "ADEPT: Continual Pretraining via Adaptive Expansion and Dynamic Decoupled Tuning",
+      "snippet": "Conventional continual pretraining (CPT) for large language model (LLM) do main adaptation often suffers from catastrophic forgetting and limited domain ca pacity. Existing strategies adopt layer expansion, introducing additional trainable parameters to accommodate new knowledge. However, the uniform expansion and updates still entangle general and domain learning, undermining its effective ness. Our pilot studies reveal that LLMs exhibit functional specialization, where layers and units differentially encode general-critical capabilities, suggesting that parameter expansion and optimization should be function-aware. We then pro pose ADEPT, Adaptive Expansion and Dynamic Decoupled Tuning for continual pretraining, a two-stage framework for domain-adaptive CPT. ADEPT first per forms General-Competence Guided Selective Layer Expansion, duplicating lay ers least critical for the general domain to increase representational capacity while minimizing interference with general knowledge. It then applies Adaptive Unit Wise Decoupled Tuning, disentangling parameter units within expanded layers according to their general-domain importance and assigning asymmetric learn ing rates to balance knowledge injection and retention. Experiments on mathe matical and medical benchmarks show that ADEPT outperforms full-parameter CPT by up to 5.76% on the general domain and 5.58% on the target domain with only 15% of parameters tuned and less than 50% training time. Ablation studies, theoretical an",
+      "published": null,
+      "retrieved_at": "2026-11-15T17:11:24+00:00",
+      "used": false
+    },
+    {
+      "id": "src-6021a0f2e7ed",
+      "query": "new method to reduce forgetting when continually pretraining an LLM on a new domain",
+      "url": "https://arxiv.org/abs/2609.23916",
+      "title": "Time-Incremental Continued Pretraining of LLMs: Knowledge Updates Without Catastrophic Forgetting",
+      "snippet": "Large language models (LLMs) drift out of date the moment their pretraining ends, yet retraining from scratch is prohibitively expensive. Continued pretraining (CPT) is the natural remedy, but it is typically evaluated through a continual learning lens that assumes disjoint data streams. This is a poor fit for time-incremental updates on web-scale crawls, where successive snapshots share substantial URL overlap by design. We study time-incremental CPT in this realistic regime: continued pretraining on FineWeb-Edu dumps drawn strictly from after each model’s knowledge cutoff, evaluated across six open-weight models spanning three families (OLMo2, Llama-3.1/3.2, Gemma-3-1B) and four parameter scales (1B-3B-7B–8B). We organize our findings around four practical questions. (i) Is knowledge acquired? Yes, but heterogeneously, and without catastrophic forgetting: five of six models also improve on pre-cutoff factual recall, and the gains track pretraining saturation (driven primarily by token budget per parameters). (ii) What does it cost? Almost nothing: the macro-average across a thirteen-task suite stays within $0.01$ of the base for every model (iii) What is the recipe? Data quality dominates quantity (a curated 6B-token slice matches a 40B broader one); the optima for knowledge acquisition and general capability are separated by roughly an order of magnitude in learning rate; and LoRA at sufficient rank matches full CPT. (iv) Does it survive deployment? CPT gains transfer thro",
+      "published": "2026-09-20T22:44:54.000Z",
+      "retrieved_at": "2026-11-15T17:11:24+00:00",
+      "used": false
+    },
+    {
+      "id": "src-bc2d8546be4d",
+      "query": "new method to reduce forgetting when continually pretraining an LLM on a new domain",
+      "url": "https://arxiv.org/html/2406.14833",
+      "title": "Efficient Continual Pre-training by Mitigating the Stability Gap",
+      "snippet": "Continual pre-training has increasingly become the predominant approach for adapting Large Language Models (LLMs) to new domains. This process involves updating the pre-trained LLM with a corpus from a new domain, resulting in a shift in the training distribution. To study the behavior of LLMs during this shift, we measured the model’s performance throughout the continual pre-training process. we observed a temporary performance drop at the beginning, followed by a recovery phase, a phenomenon known as the \"stability gap,\" previously noted in vision models classifying new classes. The substantial performance drop and slow recovery associated with this gap lead to inefficient pre-training for domain performance improvement and the forgetting of general task knowledge. To address this issue and enhance LLM performance within a fixed compute budget, we propose three effective strategies: (1) Continually pre-training the LLM on a subset with a proper size for multiple epochs, resulting in faster performance recovery than pre-training the LLM on a large corpus in a single epoch; (2) Pre-training the LLM only on high-quality sub-corpus, which rapidly boosts domain performance; and (3) Using a data mixture similar to the pre-training data to reduce distribution gap. We conduct various experiments on Llama-family models to validate the effectiveness of our strategies in both medical continual pre-training and instruction tuning. For example, our strategies improve the average medical",
+      "published": "2024-06-27T00:00:00.000Z",
+      "retrieved_at": "2026-11-15T17:11:24+00:00",
+      "used": false
+    },
+    {
+      "id": "src-d8dba1aea4c0",
+      "query": "new method to reduce forgetting when continually pretraining an LLM on a new domain",
+      "url": "https://arxiv.org/pdf/2210.05549",
+      "title": "",
+      "snippet": "task involves fine-tuning the continual post-trained LM (called p-LM). This causes major forgetting, ... the catastrophic butterfly effect (CBE) and does not happen in conventional CL. Our proposed system, CPT, can solve both CF and CBE, based on a novel",
+      "published": "2022-10-11T15:43:58.000Z",
+      "retrieved_at": "2026-11-15T17:11:24+00:00",
+      "used": false
+    },
+    {
+      "id": "src-a90cb6073bd8",
+      "query": "new method to reduce forgetting when continually pretraining an LLM on a new domain",
+      "url": "https://doi.org/10.48550/arxiv.2302.03241",
+      "title": "Continual Pre-training of Language Models",
+      "snippet": "## Abstract\n\nLanguage models (LMs) have been instrumental for the rapid advance of natural language processing. This paper studies continual pre-training of LMs, in particular, continual domain-adaptive pre-training (or continual DAP-training). Existing research has shown that further pre-training an LM using a domain corpus to adapt the LM to the domain can improve the end-task performance in the domain. This paper proposes a novel method to continually DAP-train an LM with a sequence of unlabeled domain corpora to adapt the LM to these domains to improve their end task performances. The key novelty of our method is a soft-masking mechanism that directly controls the update to the LM. A novel proxy is also proposed to preserve the general knowledge in the original LM. Additionally, it contrasts the representations of the previously learned domain knowledge (including the general knowledge in the pre-trained LM) and the knowledge from the current full network to achieve knowledge integration. The method not only overcomes catastrophic forgetting, but also achieves knowledge transfer to improve end-task performances. Empirical evaluation demonstrates the effectiveness of the proposed method. 1\n\nWe call this problem continual DAP-training. Starting from a pre-trained general LM (i.e., the LM has already been pre-trained on D0), we incrementally DAP-train a sequence of domain corpora D1, D2, .... Once a domain is trained, its data is no longer accessible. This is different from ",
+      "published": "2023-02-07T00:00:00.000Z",
+      "retrieved_at": "2026-11-15T17:11:24+00:00",
+      "used": false
+    },
+    {
+      "id": "src-83587af0d1e6",
+      "query": "new method to reduce forgetting when continually pretraining an LLM on a new domain",
+      "url": "https://arxiv.org/abs/2110.08534",
+      "title": "Lifelong Pretraining: Continually Adapting Language Models to Emerging Corpora",
+      "snippet": "In this paper, we study a lifelong language model pretraining challenge where a PTLM is continually updated so as to adapt to emerging data. Over a domain-incremental research paper stream and a chronologically-ordered tweet stream, we incrementally pretrain a PTLM with different continual learning algorithms, and keep track of the downstream task performance (after fine-tuning). We evaluate PTLM’s ability to adapt to new corpora while retaining learned knowledge in earlier corpora. Our experiments show distillation-based approaches to be most effective in retaining downstream performance in earlier domains. The algorithms also improve knowledge transfer, allowing models to achieve better downstream performance over the latest data, and improve temporal generalization when distribution gaps exist between training and evaluation because of time.",
+      "published": "2021-10-16T09:59:33.000Z",
+      "retrieved_at": "2026-11-15T17:11:24+00:00",
+      "used": false
+    },
+    {
+      "id": "src-5c39ee7ae648",
+      "query": "measured effect of replay ratio, learning-rate re-warm or LoRA rank on forgetting in continual pre-training of LLMs",
+      "url": "https://arxiv.org/html/2403.08763v4",
+      "title": "Simple and Scalable Strategies to Continually Pre-train Large Language Models",
+      "snippet": "Specifically, we evaluate their respective effects in the two-dataset weak shift setting (300B Pile $\\rightarrow$ 300B SlimPajama) and the two-dataset stronger shift setting (300B Pile $\\rightarrow$ 300B SlimPajama).\n\n...\n\nWe first investigate the effect of linear warm-up duration on forgetting and adaptation in the two datasets, weak shift and two datasets, stronger shift settings (see Sec. 5.2 for details). The models are pre-trained on $300$ B tokens of Pile (Gao et al., 2020) (${\\mathcal{D}}_{0}$). We continue to pre-train the models on SlimPajama (weak shift) and German Common Crawl (stronger shift) for the first 50B tokens of training. We re-warm and re-decay the learning rate using a cosine learning rate schedule set to reach its minimal value ($\\eta_{\\textit{min}}=0.1\\cdot\\eta_{\\textit{max}}$) at $300$ B and $200$ B tokens, respectively. We consider warming up the learning rate for $0.5\\%$, $1\\%$, and $2\\%$ of ${\\mathcal{D}}_{1}$’s total training iterations ($132366$ and $86000$ iterations, respectively). Since the decay happens over the remaining budget of iterations (so resp. $99.5\\%,99\\%$ and $98\\%$ of the total iterations), note that this implies that the decay phase of longer warmups happens marginally faster. Additionally, we train a model with no linear warm-up (0%) that immediately decays the LR from $\\eta_{\\textit{max}}$ . All experiments are conducted on a 405M parameter model.\n\nFigure 3 reports the validation losses for ${\\mathcal{D}}_{0}$ and ${\\mathcal{D}",
+      "published": "2024-09-04T00:00:00.000Z",
+      "retrieved_at": "2026-11-15T17:11:24+00:00",
+      "used": false
+    },
+    {
+      "id": "src-cad75e621ff0",
+      "query": "measured effect of replay ratio, learning-rate re-warm or LoRA rank on forgetting in continual pre-training of LLMs",
+      "url": "https://arxiv.org/abs/2308.04014",
+      "title": "Continual Pre-Training of Large Language Models: How to (re)warm your model?",
+      "snippet": "However, the distribution shift induced by novel data typically results in degraded performance on past data. Taking a step towards efficient continual pre-training, in this work, we examine the effect of different warm-up strategies. Our hypothesis is that the learning rate must be re-increased to improve compute efficiency when training on a new dataset. We study the warmup phase of models pre-trained on the Pile (upstream data, 300B tokens) as we continue to pre-train on SlimPajama (downstream data, 297B tokens), following a linear warmup and cosine decay schedule. We conduct all experiments on the Pythia 410M language model architecture and evaluate performance through validation perplexity. We experiment with different pre-training checkpoints, various maximum learning rates, and various warmup lengths. Our results show that while rewarming models first increases the loss on upstream and downstream data, in the longer run it improves the downstream performance, outperforming models trained from scratch—even for a large downstream dataset.\n\n...\n\nResults: The results of this experiment are provided in figures 2, 3, and 4. We observe, at the end of training, that larger maximum learning rates improve performance on downstream data, while they hurt performance on upstream data. Conversely, a smaller maximum learning rate improves performance on upstream data, while limiting adaptation to downstream data—causing decreased performance. These findings show that altering the max",
+      "published": "2023-08-08T03:18:18.000Z",
+      "retrieved_at": "2026-11-15T17:11:24+00:00",
+      "used": false
+    },
+    {
+      "id": "src-b2e7cc8d89b2",
+      "query": "measured effect of replay ratio, learning-rate re-warm or LoRA rank on forgetting in continual pre-training of LLMs",
+      "url": "https://arxiv.org/html/2504.02107v1",
+      "title": "TiC-LM: A Web-Scale Benchmark for Time-Continual LLM Pretraining",
+      "snippet": "Continual pretraining outperforms the Oracle series with 62% less compute on TiC-CC. Replay ( $\\alpha_{t}$ = 1/2) + AR at 440B tokens outperforms the Oracle series on almost all metrics, coming within 0.0001 on backward transfer. From our 220B runs, we see that gaps do remain between (token-matched) continually trained models at timestamp $t$ and Oracle- $t$ . The key though is that by reusing models, continual learning allows for more frequent checkpoints (that have seen more tokens) while maintaining cheaper total costs.\n\n...\n\nCyclic Cosine achieves the best ID performance on TiC-CC but also the most forgetting. As shown by Tab. 5 in Appx. C, the best maximum learning rate (LR) per cycle is 1e-4, notably 30 $\\times$ smaller than that used for the initial May-2013 pretraining. This differs from Ibrahim et al. (2024); Gupta et al. (2023) who suggest rewarming up to a similar LR, likely because our continual rounds are smaller and more frequent. Indeed, higher LRs degraded all metrics, while lower LRs improved backward transfer at the cost of ID. Compared to 1e-4, the AR schedule marked the opposite end of the spectrum, offering the best backward transfer compared to setting any fixed maximum LR.\n\nReplay is essential for addressing forgetting. Based on backward transfer and Figs. 16 and 15, all non-replay methods show significant forgetting at later checkpoints. Optimizer tweaks and EWC can somewhat reduce forgetting by sacrificing some ID performance. However, additionally ap",
+      "published": null,
+      "retrieved_at": "2026-11-15T17:11:24+00:00",
+      "used": false
+    },
+    {
+      "id": "src-bddf60f69411",
+      "query": "measured effect of replay ratio, learning-rate re-warm or LoRA rank on forgetting in continual pre-training of LLMs",
+      "url": "https://sites.google.com/view/irinalab/blog/continued-pretraining-blog",
+      "title": "Continual  Learning  of  Foundation Models: CL-FoMo Suite of 9.6B and 410M LLMs",
+      "snippet": "Ablating linear warmup for 0%, 0.5%, 1%, and 2% of training data.\n\nWe see that the amount of data used for warming up the learning rate does not significantly influence the perplexity on the downstream task (learning) or the upstream task (forgetting).",
+      "published": null,
+      "retrieved_at": "2026-11-15T17:11:24+00:00",
+      "used": false
+    },
+    {
+      "id": "src-d26d1a851dbb",
+      "query": "measured effect of replay ratio, learning-rate re-warm or LoRA rank on forgetting in continual pre-training of LLMs",
+      "url": "https://arxiv.org/pdf/2511.22367v1.pdf",
+      "title": "SuRe: Surprise-Driven Prioritised Replay for Continual LLM Learning",
+      "snippet": "and we observe the same trend with the slow approaches. For example, at 1:2 the gains are +0.87 for the Surprise-After (Surprise-A ... and +1.33 for the Slow-Surprise After (Slow ... EMA, and the Slow-SA outperforming the Slow Random (Slow-R) by",
+      "published": null,
+      "retrieved_at": "2026-11-15T17:11:24+00:00",
+      "used": false
+    },
+    {
+      "id": "src-b401e8f8033e",
+      "query": "measured effect of replay ratio, learning-rate re-warm or LoRA rank on forgetting in continual pre-training of LLMs",
+      "url": "https://arxiv.org/html/2505.07796v1",
+      "title": "Learning Dynamics in Continual Pre-Training for Large Language Models",
+      "snippet": "Empirically, during the CPT process, it is common practice to mix a certain percentage of $D_{pt}$ with the $D_{cpt}$ ... The replay ratio plays a critical role in influencing the distribution shift. In our experiments, varying the replay ratio revealed that higher ratios lead to smaller distribution shifts, effectively decelerating the deviation from the original dataset distribution 1 1 1 It is important to note that the $D_{cpt}$ undergoes modifications in the presence of replays.",
+      "published": "2025-05-12T00:00:00.000Z",
+      "retrieved_at": "2026-11-15T17:11:24+00:00",
+      "used": false
+    }
+  ],
+  "skipped_reason": null,
+  "meta": {
+    "agent": "scout",
+    "model": "gpt-6.1-sol",
+    "prompt_hash": "551267088a7d5d6d3ef05f579f3883afb6ae2d9434ecc180036e0c71e4dc0236",
+    "card_hash": "7fa15e2e28cf1037a66ffe54cab1ce2fb9eb6f14c68ddc9c85f1bd6454b82a77",
+    "skill_hashes": {
+      "scout_candidate": "ca674e6063a1458965dda4d5228366f19ff15b4a5a54b5535d390818fbb6dd52"
+    },
+    "usage": {
+      "model": "gpt-6.1-sol",
+      "input_tokens": 7239,
+      "output_tokens": 623,
+      "cost_usd": 0.020708,
+      "prompt_hash": "551267088a7d5d6d3ef05f579f3883afb6ae2d9434ecc180036e0c71e4dc0236",
+      "attempts": 1
+    }
+  },
+  "searches": 3,
+  "search_errors": [],
+  "memory_kept": 0,
+  "memory_dropped": 0
+}

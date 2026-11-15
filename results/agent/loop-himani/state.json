@@ -1,0 +1,306 @@
+{
+  "compute_usd_committed": 0.0,
+  "compute_usd_spent": 69.13,
+  "decision_count": 25,
+  "decision_head": "b764eeaf4c9e8d340d36187717ecac4d967338c04dde1811afa293730202d7b0",
+  "extra": {
+    "proposal_source": "fallback",
+    "rejections": [],
+    "replans": {
+      "combine#0": 2,
+      "screen#0": 1
+    }
+  },
+  "frozen_set_hash": "55f72e5cd5dec4d756fb660d65a090ea1a357963fdf9bd2aebe3edee42217978",
+  "frozen_spec_hashes": [
+    "4131a6c20126e2e34236b5ee590b50af1882f06a8f18907307f77ebee3a99152",
+    "4a3ac97755d8c0372e51444bed05b2b72f3d75cb08e7bd0155b4281dd132a2c0",
+    "99a76ca04dc6f95abc473274951845f819d0f7422b24794b4e010daf4f9ead65"
+  ],
+  "gate_rejections": 0,
+  "halted_reason": null,
+  "model_usd_spent": 0.0,
+  "pending_spec_hashes": [],
+  "phase_repeats": {},
+  "proposal": {
+    "cites_findings": [],
+    "phase": "combine",
+    "rationale": "stub: deterministic combine plan",
+    "specs": [
+      {
+        "predicted": {
+          "acquisition_ratio": 1.0,
+          "retention_mean_delta": 0.0
+        },
+        "reason": "control arm",
+        "role": "control",
+        "spec": {
+          "bench": "fast",
+          "name": "combine-no_mitigation-s0",
+          "notes": "",
+          "optim": {},
+          "parent_spec_hash": null,
+          "seed": 0,
+          "stream": [
+            {
+              "name": "code",
+              "tokens": 10000000
+            },
+            {
+              "name": "legal",
+              "tokens": 10000000
+            }
+          ],
+          "techniques": []
+        }
+      },
+      {
+        "predicted": {
+          "acquisition_ratio": 1.0,
+          "retention_mean_delta": 0.0
+        },
+        "reason": "control arm",
+        "role": "control",
+        "spec": {
+          "bench": "fast",
+          "name": "combine-no_mitigation-s1",
+          "notes": "",
+          "optim": {},
+          "parent_spec_hash": null,
+          "seed": 1,
+          "stream": [
+            {
+              "name": "code",
+              "tokens": 10000000
+            },
+            {
+              "name": "legal",
+              "tokens": 10000000
+            }
+          ],
+          "techniques": []
+        }
+      },
+      {
+        "predicted": {
+          "acquisition_ratio": 1.0,
+          "retention_mean_delta": 0.0
+        },
+        "reason": "control arm",
+        "role": "control",
+        "spec": {
+          "bench": "fast",
+          "name": "combine-no_mitigation-s2",
+          "notes": "",
+          "optim": {},
+          "parent_spec_hash": null,
+          "seed": 2,
+          "stream": [
+            {
+              "name": "code",
+              "tokens": 10000000
+            },
+            {
+              "name": "legal",
+              "tokens": 10000000
+            }
+          ],
+          "techniques": []
+        }
+      },
+      {
+        "predicted": {
+          "acquisition_ratio": 1.0,
+          "retention_mean_delta": 0.0
+        },
+        "reason": "top two together",
+        "role": "combo",
+        "spec": {
+          "bench": "fast",
+          "name": "combine-freeze+lora-s0",
+          "notes": "",
+          "optim": {},
+          "parent_spec_hash": null,
+          "seed": 0,
+          "stream": [
+            {
+              "name": "code",
+              "tokens": 10000000
+            },
+            {
+              "name": "legal",
+              "tokens": 10000000
+            }
+          ],
+          "techniques": [
+            {
+              "name": "freeze",
+              "params": {
+                "bottom_layers": 13
+              }
+            },
+            {
+              "name": "lora",
+              "params": {
+                "rank": 8
+              }
+            }
+          ]
+        }
+      },
+      {
+        "predicted": {
+          "acquisition_ratio": 1.0,
+          "retention_mean_delta": 0.0
+        },
+        "reason": "top two together",
+        "role": "combo",
+        "spec": {
+          "bench": "fast",
+          "name": "combine-freeze+lora-s1",
+          "notes": "",
+          "optim": {},
+          "parent_spec_hash": null,
+          "seed": 1,
+          "stream": [
+            {
+              "name": "code",
+              "tokens": 10000000
+            },
+            {
+              "name": "legal",
+              "tokens": 10000000
+            }
+          ],
+          "techniques": [
+            {
+              "name": "freeze",
+              "params": {
+                "bottom_layers": 13
+              }
+            },
+            {
+              "name": "lora",
+              "params": {
+                "rank": 8
+              }
+            }
+          ]
+        }
+      },
+      {
+        "predicted": {
+          "acquisition_ratio": 1.0,
+          "retention_mean_delta": 0.0
+        },
+        "reason": "top two together",
+        "role": "combo",
+        "spec": {
+          "bench": "fast",
+          "name": "combine-freeze+lora-s2",
+          "notes": "",
+          "optim": {},
+          "parent_spec_hash": null,
+          "seed": 2,
+          "stream": [
+            {
+              "name": "code",
+              "tokens": 10000000
+            },
+            {
+              "name": "legal",
+              "tokens": 10000000
+            }
+          ],
+          "techniques": [
+            {
+              "name": "freeze",
+              "params": {
+                "bottom_layers": 13
+              }
+            },
+            {
+              "name": "lora",
+              "params": {
+                "rank": 8
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "resume_from": null,
+  "scout_done": true,
+  "seen_row_hashes": [
+    "6b0cde00407a8908f77c7afa00879fb483c66142f83edac275700241aeb9a016",
+    "e24bd8d085b18d57aaa8e9839f00c8f40eb176e8ebdf472d9d7d9b51ff7dcd38",
+    "ed9128b6411696bb6d7bfec73eb702e1600f00b371b1a4224aae90830266da21",
+    "03565d8105f65dde0e2a642d9ff74369bad6975fe9dc26189d7cb6705fae9aa7",
+    "134c1871e4c63766bac6378f94ace1ff72e7ea169116b5d1bfdbca9172d8f02c",
+    "4aaf08c828be3061edd30f411e682950c11b7298e973c9697f7187c24ee62d6e",
+    "cde4b7561ede9165dc253d2b84035b3de8a4ebf386c33db0bf7fdbc4100b5f20",
+    "ac31b1175452a9b64b36b98f3fcedd38792874b2faa8ba64b9c82d99fd7a25fa",
+    "8bbb5bff07a531e75ce6aaa59aa443da83a327e87cf608d529913fa34f0abea5",
+    "c08ac9db83b8226a8ce871f29dca27deb77307a39ae0a1d1d48f8ce1fc3186d9",
+    "81f2e93c3d861d9e4b00507c135c2e195acaac1912d740ec9af62e9fe092ca19",
+    "db9447bc7e5bf0901dce181d6e7761010c3812223ee569fba6862de0b3714b4b",
+    "c714ee31298c3a52da451115044cfc554c05e45c95aaa65422026e86ed07ffd1",
+    "2392d38ab2c3b7db130ad849babd1ae46b67f58396d983d16b77e337a7ce3155",
+    "a7c5fe016c0f35a69538a740a225734d748e5ef4b5e4286c77dde094876d5920",
+    "fbad2763ba8814bbc79608f13d79fc790aa4937b921c02b4b2dd8f1b21d6fee3",
+    "d72794ea7616dd3e93cf829ab0440457f31d4e314c001cf36e98e55c59e47d7b",
+    "6ec404558eb8a45f1c2823992488460cbf2375cabb2f01e4d383308e2f96818f",
+    "0baf09ac3bdc99e9029b23718f7c142d1c85e4efd612013081ec64b2e5b29871",
+    "b3a4fb75b319ac2964fa99c8bc7ea94e2d5ffc84a5e094bfe210a0e132aa26e6",
+    "403fad890fb44fecbef73b046b24018ba148815d725e377c3db8d661f7026c5b",
+    "ab6bcd0ee3a1de7a2e7a2ea361713030519c00449f0e1db266cc92c4217f1e89",
+    "4824c7bb7586ce40d511cf9b88a48c9ad9ee7333afccd7b1436e68649c7ecde1",
+    "66508a2cfa79df653e0782c5854ad14ddd894d21a9df6a2482dfe69a74abd784",
+    "9e46e8ac741de3557d22df14c9bb0700335fb89af3ce06a94e74c9179c9ddbf5",
+    "0a219559be87dafaa988720ad46f15e98a2e3553b10e31c9cc8f6493c158978a",
+    "3fb00da04035a3a578ad4f9f3f81e0d55ac63067e3294c5d8d030de37fd4f151",
+    "279b55dc23a45f8479982aab4d610def40199743d7a1402098dcb990d6a8d904",
+    "302a31a5481a0b2ecf31ecc2b0faea209b2e132e7262a908ed5bd777d33449d8",
+    "1f853ae897d4bbdb54d273d0478395c752791d1905d15544ea3c0b88622f8973",
+    "8e80747b29e6bceae96eb0da80ac3aeece59ab69026677ddee17e43ac829eb17",
+    "a91ef344006e032b540d74ce33f46a358b17d7f39c41cfd2848a202a190e5a3d",
+    "5b2dbd2f8da64ffc924120d6f68e18057002aeeb44e87aa70ae8440cbecd1e1a",
+    "d77cfe7db71d0bf86c70d5bb53c75ea5982229a392303300fceffaefb6ed4536",
+    "f7fafc32c44cf0561012867320014060d3acb525994d287036fe54479c836eab",
+    "aab7503d5cbecbd2078106c39d39222a96d10cb4eda3a3ab7ed2f5abb8683183",
+    "fce95264e6c76aa7fc9a7626bc1bc7e4e3bfd2cf43533886b054762499cad64e",
+    "905cb16d716f329ec6a17445d923445cf9f25351c1a68fb7bc55909a4087f223",
+    "affee52870cf50f906c9cb9f628c38d69eb8b702f01122473802e9b95abf9896",
+    "da988fd92c625111730def35fd1f896352a37b2173715777adfcc983bb954d4d",
+    "51cf90f3696c58c122909815bd34d55fc88550758c6217d7882824ae0cd40a34",
+    "699b4f7e078b4dfc6cb92a67048dcd409c12c16db8d097c73ec919ce6830c5f7",
+    "1b1a7e08c8ce032b84f3580f65608368b9d62ca8229965a4726272d5d5ca8212",
+    "8a418332273bfe507e7f27403690bd663283a2cd2284bc06feead86d2101577b",
+    "72d8376ac85a4d8cd7184ecdd50888d7352c8eff03bc48168770e353c1a4a931",
+    "9dfabc2ae2ec8839e11d1e3734a8c2fb4163a33252ce34b7d6e2ff3ad80969aa"
+  ],
+  "started_at": "2026-11-15T17:10:30+00:00",
+  "state": {
+    "phase": null,
+    "step": "report"
+  },
+  "updated_at": "2026-11-15T17:11:51+00:00",
+  "verdict": {
+    "dropped": [
+      {
+        "reason": "this spec is already launched",
+        "rule": "duplicate",
+        "spec_hash": "4086e2135782afb95e740ed93a5797a1a3b350de8fc49c424eae9292a57cf809"
+      }
+    ],
+    "kept": [
+      "2e1cee9fcd98ef7d87581c2b9952f9897f61d5567e600889e670b9bcdae51f12",
+      "cc55bed4f8d5207f6b10f403c7aa72f77d9c3e2e5f3815bf1ebb46bbe279bb38",
+      "9bd33d4b54e5a03048b8d778e5fa25fbe9be1636c02c4a78887863c7e7309192",
+      "540fdc47ca5420f1c5bf73b2cd9777403755ec981c1b8a790678575f0257ce40",
+      "1d6bbb750b1ed3a7b86ccdc921145e651cbee98951fb0d8af46db06a5391cf8d"
+    ],
+    "token": "TRIM"
+  }
+}
