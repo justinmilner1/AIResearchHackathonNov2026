@@ -2,6 +2,7 @@
 A scripted model and a fake Modal: no network, no GPU."""
 
 import shutil
+from pathlib import Path
 
 import pytest
 from test_explore import SHA, FakeModal, _cycle, _hyp, _row, _spec
@@ -149,9 +150,10 @@ def test_without_a_model_or_a_fresh_result_the_skeptic_is_silent(tmp_path, have)
 
 
 def test_last_nights_records_load_and_resolve_unchanged_with_the_flag_off(tmp_path, have):
-    real = REPO_ROOT / "results" / "agent" / "explore-justin" / "hypotheses.jsonl"
-    if not real.exists():
-        pytest.skip("no explore-justin records in this checkout")
+    # A frozen copy of results/agent/explore-justin/hypotheses.jsonl as it was before the first
+    # --skeptic run (main at 1a8f279). The live file now also holds that run's replicated and
+    # challenged records, which this test is not about.
+    real = Path(__file__).parent / "fixtures" / "explore_justin_before_skeptic.hypotheses.jsonl"
     out = tmp_path / "explore"
     out.mkdir()
     shutil.copy(real, out / "hypotheses.jsonl")
