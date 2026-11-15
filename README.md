@@ -156,6 +156,7 @@ clh exa-trail results/agent/explore-himani results/agent/loop-himani   # -> resu
 ```
 
 It reads committed files only, makes no network calls, and is byte-identical on a rerun.
+The Exa challenge entry is [`docs/exa-challenge.md`](docs/exa-challenge.md).
 
 ## Adding a technique
 

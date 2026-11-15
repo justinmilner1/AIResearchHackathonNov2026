@@ -22,6 +22,7 @@
   clh tinker-analyze                        C5 metrics: final acc, gap closed, forgetting (+ CIs)
   clh tinker-figures                        the C5 R[stage, task] heatmap SVG
   clh exa-trail DIR... [--out FILE]           the Exa evidence trail as one Markdown page
+  clh exa-check "<claim>" [--json]            one live Exa prior-work check on a claim (demo)
 """
 
 from __future__ import annotations
@@ -685,6 +686,13 @@ def cmd_exa_trail(args) -> int:
     return trail.main(argv)
 
 
+def cmd_exa_check(args) -> int:
+    from clharness.agent import exa_check
+
+    argv = [args.claim] + (["--json"] if args.json else [])
+    return exa_check.main(argv)
+
+
 def cmd_export_schema(args) -> int:
     from clharness.spec import json_schemas
 
@@ -807,6 +815,11 @@ def main(argv: list[str] | None = None) -> int:
                         "default: results/agent")
     p.add_argument("--out", default=str(REPO_ROOT / "results" / "agent" / "exa_trail.md"))
     p.set_defaults(fn=cmd_exa_trail)
+    p = sub.add_parser("exa-check", help="one live Exa prior-work check on a claim (the explore "
+                       "loop's ask_prior_work step), for the demo")
+    p.add_argument("claim", help="the claim to check against published work")
+    p.add_argument("--json", action="store_true", help="print the PriorWork record as JSON")
+    p.set_defaults(fn=cmd_exa_check)
     p = sub.add_parser("build-data")
     p.add_argument("--set", default="smoke", help="smoke | real")
     p.add_argument("--domain", action="append", help="real set: build only these domains (repeatable)")
