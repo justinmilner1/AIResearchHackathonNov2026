@@ -198,7 +198,7 @@ def _hypothesis_lines(h: dict[str, Any], rows: dict[str, dict[str, Any]]) -> lis
     reason = _esc(h.get("reason", ""), 600)
     lines.append(f"- **Gate:** {gate}" + (f" — {reason}" if reason and status == "rejected" else ""))
     lines += _prior_work_lines(h.get("prior_work"))
-    if status in ("confirmed", "refuted", "inconclusive"):
+    if status in ("confirmed", "confirmed_with_cost", "refuted", "inconclusive", "not_replicated"):
         verdict = f"**{status}**"
         effect, threshold = h.get("effect_points"), h.get("threshold_points")
         if effect is not None and threshold is not None:

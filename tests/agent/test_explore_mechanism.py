@@ -152,7 +152,8 @@ def test_resolve_uses_the_chosen_outcome_with_binomial_item_noise():
     other = ex.resolve_one(_stored("noncore_forgotten"), [control, test], sd_points=None)
     assert other.status == "inconclusive" and other.effect_points == pytest.approx(-0.2)
     assert other.threshold_points == pytest.approx(2 * (0.041 * 0.959 / 625) ** 0.5 * 100, abs=0.001)
-    assert ex.resolve_one(_stored("noncore_forgotten", "no_difference"), [control, test], None).status == "confirmed"
+    # inside the noise is a failed detection, not an equivalence test: inconclusive, not confirmed
+    assert ex.resolve_one(_stored("noncore_forgotten", "no_difference"), [control, test], None).status == "inconclusive"
     # predicted less forgetting of the core, measured clearly more: refuted
     worse = _arm("test", core=(80.0, 76.0), other=(4.0, 4.0), techniques=freeze)
     assert ex.resolve_one(_stored("core_forgotten"), [control, worse], sd_points=None).status == "refuted"

@@ -110,3 +110,12 @@ def test_cli_writes_the_default_page(tmp_path):
     target = tmp_path / "trail.md"
     assert cli_main(["exa-trail", str(out), "--out", str(target)]) == 0
     assert target.read_text() == trail.build_trail([out])
+
+
+def test_a_costly_or_unreplicated_verdict_keeps_its_evidence_line():
+    for status in ("confirmed_with_cost", "not_replicated"):
+        h = _hyp(status=status, effect_points=29.31, threshold_points=12.74,
+                 reason="effect +29.31; learns legal worse").model_dump(mode="json")
+        lines = trail._hypothesis_lines(h, {})
+        verdict = [x for x in lines if x.startswith("- **Verdict:**")]
+        assert verdict and "+29.31" in verdict[0] and "learns legal worse" in verdict[0], status
