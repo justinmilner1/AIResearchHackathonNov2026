@@ -1,0 +1,21 @@
+{
+ "name": "nomit-lr2e-05-s3",
+ "seed": 3,
+ "bench": "fast",
+ "stream": [
+  {
+   "name": "code",
+   "tokens": 10000000
+  },
+  {
+   "name": "legal",
+   "tokens": 10000000
+  }
+ ],
+ "optim": {
+  "lr": 0.00002
+ },
+ "techniques": [],
+ "notes": "explore: replication seeds 2-3 for the iso-learning check (brendan, 2026-11-15)",
+ "parent_spec_hash": null
+}
