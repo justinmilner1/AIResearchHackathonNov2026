@@ -156,6 +156,51 @@ img.diagram { align-self: center; margin-top: 24px; border-radius: 16px; }
 <aside>Twenty-five seconds. We hold everything constant. One small model trains on code and then on legal text, using the same stream every run. A run takes about twenty minutes, so we can afford many. We track two scores: accuracy on four general multiple-choice tasks, two thousand questions in all, compared with the model before training; and perplexity on held-out text from the new domain right after training, relative to the base model. Six published techniques plug in as switches. We ran several alone and fourteen combinations, and we pre-registered what counts as a win. If asked, the questions are split into a selection half and a report half so we never pick and report on the same items. Legal is where learning shows, since the model already knew code-like text well, so its code perplexity did not improve. The training harness is prior work; the bench, techniques, analysis and agent are from this weekend.</aside>
 </section>
 
+<section id="agent" data-transition="fade">
+<p class="eyebrow">Phase 2: the research agent</p>
+<h2>How the research agent works.</h2>
+<div class="dloop">
+<p class="dlabel">Research agent loop, runs unattended</p>
+<div class="dgrid">
+<div class="dbox exa"><h3>Exa: find</h3><p class="body">Published sources</p></div>
+<p class="darrow">→</p>
+<div class="dbox"><h3>OpenAI: propose</h3><p class="body">Hypotheses + code</p></div>
+<p class="darrow">→</p>
+<div class="dbox"><h3>Code gate</h3><p class="body">Static, tiny, GPU</p></div>
+<p class="darrow">→</p>
+<div class="dbox exa"><h3>Exa: prior work</h3><p class="body">Answer with citations</p></div>
+<p class="darrow">↑</p><p class="darrow"></p><p class="darrow"></p><p class="darrow"></p><p class="darrow"></p><p class="darrow"></p><p class="darrow">↓</p>
+<div class="dbox exa"><h3>Exa: next query</h3><p class="body">3 searches of its own</p></div>
+<p class="darrow">←</p>
+<div class="dbox"><h3>Verdict</h3><p class="body">Rule + skeptic</p></div>
+<p class="darrow">←</p>
+<div class="dbox wide3"><h3>Modal: run</h3><p class="body">H100s, 2+ seeds against a control</p></div>
+</div>
+</div>
+<div class="dsupport">
+<div class="dbox"><h3>Frozen bench</h3><p class="body">Gemma 3 1B, pre-registered</p></div>
+<div class="dbox"><h3>Tinker: grounding</h3><p class="body">Qwen3-8B LoRA, second sequence</p></div>
+<div class="dbox exa"><h3>Evidence</h3><p class="body">exa_trail.md, 76 URLs</p></div>
+<div class="dbox"><h3>past.dev</h3><p class="body">Shared memory</p></div>
+</div>
+<p class="foot">Green: an Exa API call in the main loop (search, answer, find similar) · results/agent/exa_trail.md · src/clharness/agent/explore.py</p>
+<aside>Twenty seconds. The research agent runs a loop, unattended. Exa finds published sources. An OpenAI model proposes a hypothesis, with its prediction, and sometimes its own technique as code. A code gate decides what may run, with a static check, a tiny-model check and a short GPU probe. Exa checks whether the idea has already been tested. The runs go out on Modal. A fixed rule gives the verdict, and the skeptic, our critic, re-runs what held and tests the cheapest alternative explanation. Then the agent chooses its own next search and the loop repeats. Under the loop: the frozen bench, a second task sequence on Tinker with a different model as grounding, an evidence trail of every source, and past.dev as shared memory between agent instances.</aside>
+</section>
+
+<section id="agentstats" class="dark" data-transition="fade">
+<p class="eyebrow">Phase 2: the research agent · what it did</p>
+<h2>An agent that studies why the model forgets, and doubts its own results.</h2>
+<div class="steps">
+<div class="step rise" style="--i:1"><p class="num">108</p><h3>hypotheses</h3><p class="body">Each with a prediction written before its runs.</p></div>
+<div class="step rise" style="--i:2"><p class="num">14</p><h3>refused</h3><p class="body">Deterministic code decides what may run.</p></div>
+<div class="step rise" style="--i:3"><p class="num">208</p><h3>runs</h3><p class="body">Two seeds against a control, on Modal. A fixed rule gives the verdict.</p></div>
+<div class="step rise" style="--i:4"><p class="num">32</p><h3>own techniques</h3><p class="body">Written by the agent, tested after three safety checks.</p></div>
+<div class="step rise" style="--i:5"><p class="num">9 · 2</p><h3>held · challenged</h3><p class="body">Nine results held at four seeds. Its skeptic step knocked down two.</p></div>
+</div>
+<p class="foot">Four instances, exploratory, selection half · results/agent/explore_summary.md at commit be76eff · held and challenged: instance justin</p>
+<aside>Twenty-five seconds. The second layer is the research agent, studying why the model forgets. Each hypothesis states a prediction before any run. Automated code decides what is allowed to run and a fixed rule gives the verdict, so the model never grades itself. Across four instances it proposed 108 hypotheses, 14 were refused, and 208 runs tested the rest. Thirty-two tested configurations were techniques the agent wrote itself, each passing a syntax check, tiny-model check, and short GPU probe first. Its skeptic step re-runs every confirmed result at two more seeds and tests the cheapest alternative explanation: nine held, and two were overturned by its own checks.</aside>
+</section>
+
 <section id="controls" data-transition="fade">
 <p class="eyebrow">&nbsp;Phase 1: an overlooked learning-rate baseline</p>
 <h2>Tune the learning rate first.</h2>
@@ -203,51 +248,6 @@ img.diagram { align-self: center; margin-top: 24px; border-radius: 16px; }
 <p class="note">Combination 1, replicated at three seeds: +2.1 points against the published recipe, and +0.1 against lowering the learning rate alone, which is effectively level. Nothing met our pre-registered win rule.</p>
 <p class="foot">Screen: one seed each, selection half, points against the untrained model · confirmatory: report half · results/analysis/grid_analysis.md</p>
 <aside>Twenty-five seconds. On the grid, we screened fourteen combinations of the six techniques, chosen so each technique's effect can be separated. A dot means the technique is switched on. Most combinations kept old knowledge well, but only two also kept learning the new domain within our pre-registered margin; the rest protected old knowledge by learning less. We replicated the best at three seeds: it beats the published recipe by 2.1 points and is level with lowering the learning rate alone. So nothing met the win rule we pre-registered, and we report that as the result.</aside>
-</section>
-
-<section id="agent" data-transition="fade">
-<p class="eyebrow">Phase 2: the research agent</p>
-<h2>How the research agent works.</h2>
-<div class="dloop">
-<p class="dlabel">Research agent loop, runs unattended</p>
-<div class="dgrid">
-<div class="dbox exa"><h3>Exa: find</h3><p class="body">Published sources</p></div>
-<p class="darrow">→</p>
-<div class="dbox"><h3>OpenAI: propose</h3><p class="body">Hypotheses + code</p></div>
-<p class="darrow">→</p>
-<div class="dbox"><h3>Code gate</h3><p class="body">Static, tiny, GPU</p></div>
-<p class="darrow">→</p>
-<div class="dbox exa"><h3>Exa: prior work</h3><p class="body">Answer with citations</p></div>
-<p class="darrow">↑</p><p class="darrow"></p><p class="darrow"></p><p class="darrow"></p><p class="darrow"></p><p class="darrow"></p><p class="darrow">↓</p>
-<div class="dbox exa"><h3>Exa: next query</h3><p class="body">3 searches of its own</p></div>
-<p class="darrow">←</p>
-<div class="dbox"><h3>Verdict</h3><p class="body">Rule + skeptic</p></div>
-<p class="darrow">←</p>
-<div class="dbox wide3"><h3>Modal: run</h3><p class="body">H100s, 2+ seeds against a control</p></div>
-</div>
-</div>
-<div class="dsupport">
-<div class="dbox"><h3>Frozen bench</h3><p class="body">Gemma 3 1B, pre-registered</p></div>
-<div class="dbox"><h3>Tinker: grounding</h3><p class="body">Qwen3-8B LoRA, second sequence</p></div>
-<div class="dbox exa"><h3>Evidence</h3><p class="body">exa_trail.md, 76 URLs</p></div>
-<div class="dbox"><h3>past.dev</h3><p class="body">Shared memory</p></div>
-</div>
-<p class="foot">Green: an Exa API call in the main loop (search, answer, find similar) · results/agent/exa_trail.md · src/clharness/agent/explore.py</p>
-<aside>Twenty seconds. The research agent runs a loop, unattended. Exa finds published sources. An OpenAI model proposes a hypothesis, with its prediction, and sometimes its own technique as code. A code gate decides what may run, with a static check, a tiny-model check and a short GPU probe. Exa checks whether the idea has already been tested. The runs go out on Modal. A fixed rule gives the verdict, and the skeptic, our critic, re-runs what held and tests the cheapest alternative explanation. Then the agent chooses its own next search and the loop repeats. Under the loop: the frozen bench, a second task sequence on Tinker with a different model as grounding, an evidence trail of every source, and past.dev as shared memory between agent instances.</aside>
-</section>
-
-<section id="agentstats" class="dark" data-transition="fade">
-<p class="eyebrow">Phase 2: the research agent · what it did</p>
-<h2>An agent that studies why the model forgets, and doubts its own results.</h2>
-<div class="steps">
-<div class="step rise" style="--i:1"><p class="num">108</p><h3>hypotheses</h3><p class="body">Each with a prediction written before its runs.</p></div>
-<div class="step rise" style="--i:2"><p class="num">14</p><h3>refused</h3><p class="body">Deterministic code decides what may run.</p></div>
-<div class="step rise" style="--i:3"><p class="num">208</p><h3>runs</h3><p class="body">Two seeds against a control, on Modal. A fixed rule gives the verdict.</p></div>
-<div class="step rise" style="--i:4"><p class="num">32</p><h3>own techniques</h3><p class="body">Written by the agent, tested after three safety checks.</p></div>
-<div class="step rise" style="--i:5"><p class="num">9 · 2</p><h3>held · challenged</h3><p class="body">Nine results held at four seeds. Its skeptic step knocked down two.</p></div>
-</div>
-<p class="foot">Four instances, exploratory, selection half · results/agent/explore_summary.md at commit be76eff · held and challenged: instance justin</p>
-<aside>Twenty-five seconds. The second layer is the research agent, studying why the model forgets. Each hypothesis states a prediction before any run. Automated code decides what is allowed to run and a fixed rule gives the verdict, so the model never grades itself. Across four instances it proposed 108 hypotheses, 14 were refused, and 208 runs tested the rest. Thirty-two tested configurations were techniques the agent wrote itself, each passing a syntax check, tiny-model check, and short GPU probe first. Its skeptic step re-runs every confirmed result at two more seeds and tests the cheapest alternative explanation: nine held, and two were overturned by its own checks.</aside>
 </section>
 
 <section id="leads" data-transition="fade">
