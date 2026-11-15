@@ -1,10 +1,9 @@
 <section id="close" class="accent" data-transition="fade">
 <p class="eyebrow" style="color:#17223B">Phase 2: Where this goes next</p>
-<h2>Tune the learning rate first. Then point the agent at the leads.</h2>
 <div class="cards">
-<div class="card"><p class="unit">Lead 1 · held at four seeds</p><h3>Separate weights protect old knowledge</h3><p class="body">Next run: a stream of many domains, a fresh adapter for each, merged in afterwards.</p></div>
-<div class="card"><p class="unit">Lead 2 · open</p><h3>Is the damage in particular layers?</h3><p class="body">Next run: MLPs against attention, with both arms matched on how much they learn.</p></div>
-<div class="card"><p class="unit">Lead 3 · seen across arms</p><h3>The same questions are lost each time</h3><p class="body">Next: testing whether the base model’s confidence can predict which questions are lost, before any training.</p></div>
+<div class="card" style="transform:translate(0, 89px)"><p class="unit">Lead 1 · held at four seeds</p><h3>Separate weights protect old knowledge</h3><p class="body">Next run: a stream of many domains, a fresh adapter for each, merged in afterwards.</p></div>
+<div class="card" style="transform:translate(0, 89px)"><p class="unit">Lead 2 · open</p><h3>Is the damage in particular layers?</h3><p class="body">Next run: MLPs against attention, with both arms matched on how much they learn.</p></div>
+<div class="card" style="transform:translate(0, 89px)"><p class="unit">Lead 3 · seen across arms</p><h3>The same questions are lost each time</h3><p class="body">Next: testing whether the base model’s confidence can predict which questions are lost, before any training.</p></div>
 </div>
 <p class="foot">One small model, a short stream, no winning technique yet · everything rebuilds with make reproduce</p>
 <aside>Twenty seconds. In summary, on this bench, tuning the learning rate matches or beats every published technique we tested, so any new fix should be judged against that. We have three leads to pursue with the same agent, each a hypothesis with a prediction the bench can test in twenty minutes: first, whether separate weights protect old knowledge over many domains; second, whether damage sits in particular layers when tested fairly; and third, since seeds lose the same questions and pick the same wrong answer, whether base model confidence can predict which before training. The limits: one small model, a short stream, and no winning technique yet. Everything rebuilds from committed results. Thank you.</aside>

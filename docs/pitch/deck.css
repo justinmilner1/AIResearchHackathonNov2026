@@ -59,3 +59,18 @@ table.wide { font-size: 26px; }
 .stack { display: flex; flex-direction: column; gap: 20px; padding-top: 32px; }
 .stack .row { display: flex; gap: 20px; }
 .stack .card { padding: 24px 36px; gap: 10px; }
+.flow { display: flex; align-items: stretch; gap: 12px; padding-top: 40px; }
+.fbox { flex: 1; background: #22304F; border: 2px solid #34456B; border-radius: 16px; padding: 24px 26px; display: flex; flex-direction: column; gap: 10px; }
+.fbox h3 { font-size: 40px; color: #F4A261; }
+.fbox .body { font-size: 24px; line-height: 1.35; color: #C9D3E3; }
+.arrow { font-size: 44px; color: #F4A261; align-self: center; }
+.loopback { font-size: 26px; color: #F4A261; padding: 20px 0; }
+.aux { display: flex; gap: 20px; }
+.loop { display: grid; grid-template-columns: 1fr 64px 1fr 64px 1fr; gap: 8px 12px; padding-top: 28px; align-items: stretch; }
+.loop .arrow { text-align: center; line-height: 1; }
+.looplabel { font-size: 24px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #9AA7BD; text-align: center; align-self: center; }
+.loop .fbox { padding: 20px 26px; gap: 8px; }
+.fbox.crit { border: 2px solid #F4A261; }
+.aux { padding-top: 20px; }
+.aux .fbox { padding: 18px 26px; gap: 6px; }
+img.diagram { align-self: center; margin-top: 24px; border-radius: 16px; }

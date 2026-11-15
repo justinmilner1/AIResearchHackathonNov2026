@@ -66,6 +66,21 @@ table.wide { font-size: 26px; }
 .stack { display: flex; flex-direction: column; gap: 20px; padding-top: 32px; }
 .stack .row { display: flex; gap: 20px; }
 .stack .card { padding: 24px 36px; gap: 10px; }
+.flow { display: flex; align-items: stretch; gap: 12px; padding-top: 40px; }
+.fbox { flex: 1; background: #22304F; border: 2px solid #34456B; border-radius: 16px; padding: 24px 26px; display: flex; flex-direction: column; gap: 10px; }
+.fbox h3 { font-size: 40px; color: #F4A261; }
+.fbox .body { font-size: 24px; line-height: 1.35; color: #C9D3E3; }
+.arrow { font-size: 44px; color: #F4A261; align-self: center; }
+.loopback { font-size: 26px; color: #F4A261; padding: 20px 0; }
+.aux { display: flex; gap: 20px; }
+.loop { display: grid; grid-template-columns: 1fr 64px 1fr 64px 1fr; gap: 8px 12px; padding-top: 28px; align-items: stretch; }
+.loop .arrow { text-align: center; line-height: 1; }
+.looplabel { font-size: 24px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #9AA7BD; text-align: center; align-self: center; }
+.loop .fbox { padding: 20px 26px; gap: 8px; }
+.fbox.crit { border: 2px solid #F4A261; }
+.aux { padding-top: 20px; }
+.aux .fbox { padding: 18px 26px; gap: 6px; }
+img.diagram { align-self: center; margin-top: 24px; border-radius: 16px; }
 </style></head><body>
 <section id="cover" class="dark" data-transition="fade">
 <p class="eyebrow">Iterate SF AI Research Hackathon · Autoresearch / Open Track</p>
@@ -78,13 +93,15 @@ table.wide { font-size: 26px; }
 <section id="problem" data-transition="fade">
 <p class="eyebrow">The problem</p>
 <h2>A model that keeps learning forgets what it knew.</h2>
-<p class="lede">Goal 1: Standardize published continual learning research results<br><br>Goal 2: Enable an autoresearch agent to produce new continual learning research results</p>
+<p class="lede" style="transform:translate(0, 108px)">Goal 1: Standardize published continual learning research results<br><br></p>
 <div class="cards">
-<div class="card rise" style="--i:1"><h3>Different models</h3><p class="body">From 400 million parameters to 10 billion.</p></div>
-<div class="card rise" style="--i:2"><h3>Different data</h3><p class="body">Each paper picks its own old and new domains.</p></div>
-<div class="card rise" style="--i:3"><h3>Different budgets</h3><p class="body">Millions of tokens in one, billions in the next.</p></div>
+<div class="card rise" style="--i:1;translate:0 28px"><h3>Different models</h3><p class="body">From 400 million parameters to 10 billion.</p></div>
+<div class="card rise" style="--i:2;translate:0 28px"><h3>Different data</h3><p class="body">Each paper picks its own old and new domains.</p></div>
+<div class="card rise" style="--i:3;translate:0 28px"><h3>Different budgets</h3><p class="body" style="transform:translate(1px, 6px)">Millions of tokens in one, billions in the next.</p></div>
 </div>
-<p class="foot">Remember</p>
+<p class="eyebrow" id="4c6dec28" style="position:absolute;width:1664px;box-sizing:border-box;left:50%;transform:translateX(-50%);top:425px">The GOALS</p>
+<p id="780455ad" style="box-sizing:border-box; position:absolute; top:calc(50% + 451.2px); left:calc(50% - 194.68px); width:720px; font-family:Inter, Arial, sans-serif; font-size:28px; transform:translate(-50%, -50%)"></p>
+<p class="lede" id="63f7220f" style="position:absolute;width:1400px;box-sizing:border-box;bottom:89px;left:128px">Goal 2: Enable an autoresearch agent to produce new continual learning research results</p>
 <aside>Twenty seconds. When a language model keeps training on new data, it forgets old knowledge. There are many published fixes, but each paper uses its own model, data, and compute, so we cannot tell which fix is best and some papers disagree.</aside>
 </section>
 
@@ -92,12 +109,11 @@ table.wide { font-size: 26px; }
 <p class="eyebrow">What we built</p>
 <h2>Two layers: a bench, and an agent that runs it.</h2>
 <div class="layers">
-<div class="layer top rise" style="--i:2"><p class="unit">Layer 2 · the research agent · asks why the model forgets</p>
+<div class="layer top rise" style="--i:2;translate:0 71px"><p class="unit">Layer 2 · the research agent · asks why the model forgets</p>
 <div class="chips"><p class="chip">Proposes a hypothesis with a prediction</p><p class="chip">Code decides what may run</p><p class="chip">Launches the runs</p><p class="chip">A fixed rule gives the verdict</p><p class="chip">A skeptic step re-tests what held</p></div></div>
-<div class="layer rise" style="--i:1"><p class="unit">Layer 1 · the bench · makes every experiment comparable</p>
+<div class="layer rise" style="--i:1;translate:0 71px"><p class="unit">Layer 1 · the bench · makes every experiment comparable</p>
 <div class="chips"><p class="chip">One frozen model and data stream</p><p class="chip">Techniques as plug-ins</p><p class="chip">One GPU per run on Modal</p><p class="chip">Scores kept, learned, cost</p><p class="chip">Pre-registered analysis</p></div></div>
 </div>
-<p class="foot">Remember</p>
 <aside>Fifteen seconds. Remember has two layers. The bottom layer is a bench that makes every forgetting experiment comparable, with one frozen model and data stream, techniques as plug-ins, one GPU per run on Modal, and a pre-registered analysis. The top layer is a research agent using the bench to study why the model forgets. It proposes a hypothesis with a prediction, code decides what may run and gives the verdict, and a skeptic step re-tests whatever held.</aside>
 </section>
 
@@ -105,15 +121,15 @@ table.wide { font-size: 26px; }
 <p class="eyebrow">How we used it</p>
 <h2>Two phases.</h2>
 <div class="cards">
-<div class="card rise" style="--i:1"><p class="unit">Phase 1 · the grid</p><h3>How do the published techniques compare?</h3><p class="body">A pre-registered grid of experiments puts six techniques, alone and combined, on one bench, for a single consistent view of the field.</p></div>
-<div class="card rise" style="--i:2"><p class="unit">Phase 2 · the research agent</p><h3>Why does the model forget?</h3><p class="body">The agent explores the bench autonomously, proposing hypotheses about forgetting mechanisms, writing its own techniques, and testing them.</p></div>
+<div class="card rise" style="--i:1"><p class="unit">Phase 1 · the grid</p><h3>Standardization: How do the published techniques compare?</h3><p class="body">A pre-registered grid of experiments puts six techniques, alone and combined, on one bench, for a single consistent view of the field.</p></div>
+<div class="card rise" style="--i:2"><p class="unit">Phase 2 · the research agent</p><h3>Understand and contribute: Why does the model forget?</h3><p class="body">The agent explores the bench autonomously, proposing hypotheses about forgetting mechanisms, writing its own techniques, and testing them.</p></div>
 </div>
 <p class="foot">Remember</p>
 <aside>Ten seconds. We used it in two phases. First, a pre-registered grid puts published techniques side by side on one bench, alone and combined, to get a single consistent view of the field. Second, the research agent explores forgetting mechanisms on the bench, proposing its own hypotheses, writing its own techniques, and testing them.</aside>
 </section>
 
 <section id="bench" data-transition="fade">
-<p class="eyebrow">Layer 1 · Phase 1: the bench</p>
+<p class="eyebrow"><b>Phase 1:</b> the bench</p>
 <h2>One frozen bench. Twenty minutes a run.</h2>
 <div class="stack">
 <div class="card"><p class="unit">What we tested</p><p class="body">Six published techniques: replay, learning-rate re-warming, LoRA, layer freezing, distillation, weight averaging.&nbsp;<br><br>Several alone, and 14 in combination.</p></div>
@@ -127,8 +143,21 @@ table.wide { font-size: 26px; }
 <aside>Twenty-five seconds. We hold everything constant. One small model trains on code and then on legal text, using the same stream every run. A run takes about twenty minutes, so we can afford many. We track two scores: accuracy on four general multiple-choice tasks, two thousand questions in all, compared with the model before training; and perplexity on held-out text from the new domain right after training, relative to the base model. Six published techniques plug in as switches. We ran several alone and fourteen combinations, and we pre-registered what counts as a win. If asked, the questions are split into a selection half and a report half so we never pick and report on the same items. Legal is where learning shows, since the model already knew code-like text well, so its code perplexity did not improve. The training harness is prior work; the bench, techniques, analysis and agent are from this weekend.</aside>
 </section>
 
+<section id="controls" data-transition="fade">
+<p class="eyebrow">&nbsp;Phase 1: an overlooked learning-rate baseline</p>
+<h2>Tune the learning rate first.</h2>
+<div class="bars">
+<div class="bar-row"><p class="bar-label">No mitigation</p><div class="bar-track"><div class="bar rise" style="--i:1; width:900px"></div><p class="bar-num">−6.4</p></div></div>
+<div class="bar-row"><p class="bar-label">Published recipe: replay plus re-warming</p><div class="bar-track"><div class="bar recipe rise" style="--i:2; width:437px"></div><p class="bar-num">−3.1</p></div></div>
+<div class="bar-row"><p class="bar-label">No technique, lower learning rate</p><div class="bar-track"><div class="bar low rise" style="--i:3; width:150px"></div><p class="bar-num">−1.1</p></div></div>
+</div>
+<p class="lede">Points lost on old knowledge. All three learned the legal text about equally well.</p>
+<p class="foot">Report half of the eval items · 5 seeds for no mitigation, 3 for the others · results/rows.phase0*.jsonl, rows.reference*.jsonl</p>
+<aside>Twenty-five seconds. With no mitigation the model loses 6.4 points. The published recipe, replay plus learning-rate re-warming, cuts that to 3.1. But training at a lower learning rate, with no technique at all, loses only 1.1, and learns the new domain just as well. The recipe's schedule is mostly a learning-rate cut.</aside>
+</section>
+
 <section id="claims" data-transition="fade">
-<p class="eyebrow">Result 1 · Phase 1: published claims, re-tested on one bench</p>
+<p class="eyebrow">Phase 1: published claims, re-tested on one bench</p>
 <h2>Six published claims. Two reproduced.</h2>
 <table class="wide">
 <tr><th style="width:38%">Published claim</th><th style="width:20%">Source</th><th style="width:24%">Our effect, points (95% interval)</th><th style="width:18%">Verdict</th></tr>
@@ -144,21 +173,8 @@ table.wide { font-size: 26px; }
 <aside>Twenty-five seconds. First, we re-tested six published claims on the one bench, with the same model, data, and budget for each. Two reproduced: the standard recipe of replay plus learning-rate re-warming beats no fix, and peak learning rate is the main knob. Three failed to reproduce: replay alone, distilling on replay tokens, and freezing the top half instead of the bottom. LoRA reproduced in part, since it forgets less and learns less, but its rank claim held only after tuning its learning rate. A failed reproduction at our small scale is not proof the paper is wrong, and we say so.</aside>
 </section>
 
-<section id="controls" data-transition="fade">
-<p class="eyebrow">Result 2 · Phase 1: an overlooked learning-rate baseline</p>
-<h2>Tune the learning rate first.</h2>
-<div class="bars">
-<div class="bar-row"><p class="bar-label">No mitigation</p><div class="bar-track"><div class="bar rise" style="--i:1; width:900px"></div><p class="bar-num">−6.4</p></div></div>
-<div class="bar-row"><p class="bar-label">Published recipe: replay plus re-warming</p><div class="bar-track"><div class="bar recipe rise" style="--i:2; width:437px"></div><p class="bar-num">−3.1</p></div></div>
-<div class="bar-row"><p class="bar-label">No technique, lower learning rate</p><div class="bar-track"><div class="bar low rise" style="--i:3; width:150px"></div><p class="bar-num">−1.1</p></div></div>
-</div>
-<p class="lede">Points lost on old knowledge. All three learned the legal text about equally well.</p>
-<p class="foot">Report half of the eval items · 5 seeds for no mitigation, 3 for the others · results/rows.phase0*.jsonl, rows.reference*.jsonl</p>
-<aside>Twenty-five seconds. With no mitigation the model loses 6.4 points. The published recipe, replay plus learning-rate re-warming, cuts that to 3.1. But training at a lower learning rate, with no technique at all, loses only 1.1, and learns the new domain just as well. The recipe's schedule is mostly a learning-rate cut.</aside>
-</section>
-
 <section id="grid" data-transition="fade">
-<p class="eyebrow">Result 3 · Phase 1: the grid of combinations</p>
+<p class="eyebrow">Phase 1: the grid of combinations</p>
 <h2>Fourteen combinations. Two kept learning.</h2>
 <table>
 <tr><th style="width:16%">Combination</th><th style="width:6%; text-align:center">1</th><th style="width:6%; text-align:center">2</th><th style="width:6%; text-align:center">3</th><th style="width:6%; text-align:center">4</th><th style="width:6%; text-align:center">5</th><th style="width:6%; text-align:center">6</th><th style="width:6%; text-align:center">7</th><th style="width:6%; text-align:center">8</th><th style="width:6%; text-align:center">9</th><th style="width:6%; text-align:center">10</th><th style="width:6%; text-align:center">11</th><th style="width:6%; text-align:center">12</th><th style="width:6%; text-align:center">13</th><th style="width:6%; text-align:center">14</th></tr>
@@ -176,8 +192,18 @@ table.wide { font-size: 26px; }
 <aside>Twenty-five seconds. On the grid, we screened fourteen combinations of the six techniques, chosen so each technique's effect can be separated. A dot means the technique is switched on. Most combinations kept old knowledge well, but only two also kept learning the new domain within our pre-registered margin; the rest protected old knowledge by learning less. We replicated the best at three seeds: it beats the published recipe by 2.1 points and is level with lowering the learning rate alone. So nothing met the win rule we pre-registered, and we report that as the result.</aside>
 </section>
 
-<section id="agent" class="dark" data-transition="fade">
-<p class="eyebrow">Layer 2 · Phase 2: the research agent</p>
+<section id="agent" data-transition="fade" data-flat style="display:flex; flex-direction:column; padding:128px 128px 160px; background:#faf7f1">
+  <p style="flex:0 0 auto; padding:0 0 24px; font-family:Inter, Arial, sans-serif; font-size:24px; font-weight:600; line-height:1.4; letter-spacing:3px; text-transform:uppercase; color:#c2410c">Phase 2: the research agent</p>
+  <h2 style="flex:0 0 auto; font-family:'Space Grotesk', Arial, sans-serif; font-size:72px; font-weight:600; line-height:1.1; letter-spacing:-1px; color:#17223b">How the research agent works.</h2>
+  <div style="display:flex; flex-direction:column; flex:0 0 auto; align-self:center; padding:24px 0 0">
+    <img src="assets/agent-diagram.webp" alt="The research agent loop, running unattended: Exa finds sources; an OpenAI model proposes hypotheses and code; a code gate runs static, tiny-model and GPU checks; Exa checks prior work; Modal runs the experiments on H100s at two or more seeds; a rule and a skeptic give the verdict; Exa runs the agent's next query, and the loop repeats. Beside the loop: the frozen bench on Gemma 3 1B with its pre-registration, the Tinker second task sequence on Qwen3-8B LoRA, an evidence trail of Exa URLs, and pas" style="width:1190px; height:813px; flex:0 0 auto; border-radius:16px; object-fit:contain; transform:translate(-63px, -86px)">
+  </div>
+  <p style="position:absolute; bottom:64px; left:128px; width:1664px; font-family:Inter, Arial, sans-serif; font-size:24px; line-height:1.4; color:#6b7689">Grounding: a second task sequence on Tinker (Qwen3-8B, LoRA) checks the bench on another model · src/clharness/agent/explore.py</p>
+  <aside>Twenty seconds. The research agent runs a loop, unattended. Exa finds published sources. An OpenAI model proposes a hypothesis, with its prediction, and sometimes its own technique as code. A code gate decides what may run, with a static check, a tiny-model check and a short GPU probe. Exa checks whether the idea has already been tested. The runs go out on Modal. A fixed rule gives the verdict, and the skeptic, our critic, re-runs what held and tests the cheapest alternative explanation. Then the agent chooses its own next search and the loop repeats. Beside the loop: the frozen bench, past.dev as shared memory between agent instances, an evidence trail of every source, and, as grounding, a second task sequence on Tinker with a different model.</aside>
+</section>
+
+<section id="agentstats" class="dark" data-transition="fade">
+<p class="eyebrow">Phase 2: the research agent · what it did</p>
 <h2>An agent that studies why the model forgets, and doubts its own results.</h2>
 <div class="steps">
 <div class="step rise" style="--i:1"><p class="num">108</p><h3>hypotheses</h3><p class="body">Each with a prediction written before its runs.</p></div>
@@ -192,7 +218,7 @@ table.wide { font-size: 26px; }
 
 <section id="leads" data-transition="fade">
 <p class="eyebrow">What it found · Phase 2: exploratory</p>
-<h2>One lead held. One story did not.</h2>
+<h2>Sample hypotheses:</h2>
 <div class="cards">
 <div class="card"><p class="unit">Held at four seeds</p><h3>Separate weights protect better than constraints alone</h3><p class="body">Share of the 58 most fragile questions lost, at the same legal learning:</p>
 <div class="pair"><div class="stat"><p class="big cool">15%</p><p class="body">distillation with LoRA adapters</p></div><div class="stat"><p class="big warm">69%</p><p class="body">the same distillation on the full weights</p></div></div></div>
@@ -205,11 +231,10 @@ table.wide { font-size: 26px; }
 
 <section id="close" class="accent" data-transition="fade">
 <p class="eyebrow" style="color:#17223B">Phase 2: Where this goes next</p>
-<h2>Tune the learning rate first. Then point the agent at the leads.</h2>
 <div class="cards">
-<div class="card"><p class="unit">Lead 1 · held at four seeds</p><h3>Separate weights protect old knowledge</h3><p class="body">Next run: a stream of many domains, a fresh adapter for each, merged in afterwards.</p></div>
-<div class="card"><p class="unit">Lead 2 · open</p><h3>Is the damage in particular layers?</h3><p class="body">Next run: MLPs against attention, with both arms matched on how much they learn.</p></div>
-<div class="card"><p class="unit">Lead 3 · seen across arms</p><h3>The same questions are lost each time</h3><p class="body">Next: testing whether the base model’s confidence can predict which questions are lost, before any training.</p></div>
+<div class="card" style="transform:translate(0, 89px)"><p class="unit">Lead 1 · held at four seeds</p><h3>Separate weights protect old knowledge</h3><p class="body">Next run: a stream of many domains, a fresh adapter for each, merged in afterwards.</p></div>
+<div class="card" style="transform:translate(0, 89px)"><p class="unit">Lead 2 · open</p><h3>Is the damage in particular layers?</h3><p class="body">Next run: MLPs against attention, with both arms matched on how much they learn.</p></div>
+<div class="card" style="transform:translate(0, 89px)"><p class="unit">Lead 3 · seen across arms</p><h3>The same questions are lost each time</h3><p class="body">Next: testing whether the base model’s confidence can predict which questions are lost, before any training.</p></div>
 </div>
 <p class="foot">One small model, a short stream, no winning technique yet · everything rebuilds with make reproduce</p>
 <aside>Twenty seconds. In summary, on this bench, tuning the learning rate matches or beats every published technique we tested, so any new fix should be judged against that. We have three leads to pursue with the same agent, each a hypothesis with a prediction the bench can test in twenty minutes: first, whether separate weights protect old knowledge over many domains; second, whether damage sits in particular layers when tested fairly; and third, since seeds lose the same questions and pick the same wrong answer, whether base model confidence can predict which before training. The limits: one small model, a short stream, and no winning technique yet. Everything rebuilds from committed results. Thank you.</aside>
