@@ -1,5 +1,5 @@
 <section id="controls" data-transition="fade">
-<p class="eyebrow">Result 2 · Phase 1: the baseline nobody tunes</p>
+<p class="eyebrow">Result 2 · Phase 1: an overlooked learning-rate baseline</p>
 <h2>Tune the learning rate first.</h2>
 <div class="bars">
 <div class="bar-row"><p class="bar-label">No mitigation</p><div class="bar-track"><div class="bar rise" style="--i:1; width:900px"></div><p class="bar-num">−6.4</p></div></div>
@@ -8,5 +8,5 @@
 </div>
 <p class="lede">Points lost on old knowledge. All three learned the legal text about equally well.</p>
 <p class="foot">Report half of the eval items · 5 seeds for no mitigation, 3 for the others · results/rows.phase0*.jsonl, rows.reference*.jsonl</p>
-<aside>Twenty-five seconds. With no mitigation the model loses 6.4 points. The published recipe, replay plus learning-rate re-warming, halves that to 3.1. But simply training at a lower learning rate, with no technique at all, loses only 1.1, and learns the new domain just as well. The recipe's schedule is in effect a learning-rate cut.</aside>
+<aside>Twenty-five seconds. With no mitigation the model loses 6.4 points. The published recipe, replay plus learning-rate re-warming, cuts that to 3.1. But training at a lower learning rate, with no technique at all, loses only 1.1, and learns the new domain just as well. The recipe's schedule is mostly a learning-rate cut.</aside>
 </section>
