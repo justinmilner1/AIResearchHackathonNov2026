@@ -1,0 +1,14 @@
+<section id="bench" data-transition="fade">
+<p class="eyebrow">Layer 1 · Phase 1: the bench</p>
+<h2>One frozen bench. Twenty minutes a run.</h2>
+<div class="stack">
+<div class="card"><p class="unit">What we tested</p><p class="body">Six published techniques: replay, learning-rate re-warming, LoRA, layer freezing, distillation, weight averaging.&nbsp;<br><br>Several alone, and 14 in combination.</p></div>
+<div class="card"><p class="unit">The run</p><p class="body">Gemma 3 1B trains on code, then on legal text: 10 million tokens of each, the same stream every run.</p></div>
+<div class="row">
+<div class="card"><p class="unit">Did it learn?</p><p class="body">Perplexity on held-out text from the new domain, right after training on it, divided by the base model’s. Below 1 means it learned.</p></div>
+<div class="card"><p class="unit">Did it forget?</p><p class="body">Change in accuracy on four multiple-choice tasks, 500 questions each, against the model before training: ARC-Easy, HellaSwag, PIQA, PubMedQA.</p></div>
+</div>
+</div>
+<p class="foot">Remember · the training harness and four baseline runs predate the event; everything else was built this weekend</p>
+<aside>Twenty-five seconds. We hold everything constant. One small model trains on code and then on legal text, the same stream every run, and a run takes about twenty minutes, so we can afford many. Two scores. What it kept: accuracy on four general multiple-choice tasks, two thousand questions in all, compared with the model before training. What it learned: perplexity on held-out text from the new domain, measured right after training on it, relative to the base model. Six published techniques plug in as switches; we ran several alone and fourteen combinations, and we pre-registered what counts as a win. If asked: the questions are split into a selection half and a report half so we never pick and report on the same items. Legal is where learning shows; the model already knew code-like text well, so its code perplexity did not improve. The training harness is prior work; the bench, techniques, analysis and agent are from this weekend.</aside>
+</section>

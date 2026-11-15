@@ -1,0 +1,61 @@
+body { font-family: 'Inter', Arial, sans-serif; color: #17223B; }
+section { background: #FAF7F1; padding: 128px 128px 160px; display: flex; flex-direction: column; counter-increment: page; }
+section.dark { background: #17223B; color: #FAF7F1; }
+section.accent { background: #E4572E; color: #17223B; }
+h1 { font-family: 'Space Grotesk', Arial, sans-serif; font-size: 120px; font-weight: 700; line-height: 1.05; letter-spacing: -2px; }
+h2 { font-family: 'Space Grotesk', Arial, sans-serif; font-size: 72px; font-weight: 600; line-height: 1.1; letter-spacing: -1px; }
+h3 { font-family: 'Space Grotesk', Arial, sans-serif; font-size: 44px; font-weight: 600; line-height: 1.15; }
+p { font-size: 32px; line-height: 1.4; }
+.eyebrow { font-size: 24px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: #C2410C; padding-bottom: 24px; }
+.dark .eyebrow { color: #F4A261; }
+.lede { font-size: 44px; line-height: 1.3; color: #3D4A63; padding-top: 40px; max-width: 1400px; }
+.dark .lede { color: #C9D3E3; }
+.spacer { flex: 1; }
+.foot { position: absolute; left: 128px; bottom: 64px; width: 1664px; font-size: 24px; color: #6B7689; }
+.dark .foot { color: #9AA7BD; }
+.accent .foot { color: #17223B; }
+.cards { display: flex; gap: 32px; padding-top: 56px; }
+.card { flex: 1; background: #FFFDF8; border: 2px solid #E3DCCD; border-radius: 16px; padding: 40px; display: flex; flex-direction: column; gap: 16px; }
+.dark .card { background: #22304F; border: 2px solid #34456B; }
+.card .body { font-size: 28px; line-height: 1.4; color: #3D4A63; }
+.dark .card .body { color: #C9D3E3; }
+.big { font-family: 'Space Grotesk', Arial, sans-serif; font-size: 120px; font-weight: 700; line-height: 1; letter-spacing: -2px; }
+.big.warm { color: #C2410C; }
+.dark .big.warm { color: #F4A261; }
+.big.cool { color: #1D5FA8; }
+.dark .big.cool { color: #8EC1F0; }
+.unit { font-size: 24px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #6B7689; }
+.dark .unit { color: #9AA7BD; }
+.bars { display: flex; flex-direction: column; gap: 36px; padding-top: 64px; }
+.bar-row { display: flex; align-items: center; gap: 32px; }
+.bar-label { width: 520px; font-size: 32px; font-weight: 600; }
+.bar-track { flex: 1; display: flex; align-items: center; gap: 24px; }
+.bar { height: 72px; border-radius: 8px; background: #9AA7BD; }
+.bar.recipe { background: #E4572E; }
+.bar.low { background: #1D5FA8; }
+.bar-num { font-family: 'Space Grotesk', Arial, sans-serif; font-size: 56px; font-weight: 700; }
+table { font-size: 24px; color: #17223B; margin-top: 40px; }
+.steps { display: flex; align-items: stretch; gap: 20px; padding-top: 56px; }
+.step { flex: 1; background: #22304F; border: 2px solid #34456B; border-radius: 16px; padding: 32px; display: flex; flex-direction: column; gap: 12px; }
+.step .body { font-size: 26px; line-height: 1.35; color: #C9D3E3; }
+.step .num { font-family: 'Space Grotesk', Arial, sans-serif; font-size: 72px; font-weight: 700; color: #F4A261; line-height: 1; }
+.rise { animation: rise 500ms both; animation-delay: calc(var(--i) * 120ms); }
+@keyframes rise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+.pair { display: flex; gap: 32px; padding-top: 8px; }
+.stat { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+.layers { display: flex; flex-direction: column; gap: 28px; padding-top: 48px; }
+.layer { background: #FFFDF8; border: 2px solid #E3DCCD; border-radius: 16px; padding: 32px 40px; display: flex; flex-direction: column; gap: 20px; }
+.layer.top { background: #17223B; border: 2px solid #17223B; }
+.layer.top h3 { color: #FAF7F1; }
+.layer.top .unit { color: #F4A261; }
+.chips { display: flex; gap: 16px; }
+.chip { flex: 1; font-size: 26px; line-height: 1.3; padding: 18px 20px; border-radius: 10px; background: #F1EADB; color: #17223B; }
+.layer.top .chip { background: #22304F; color: #FAF7F1; }
+.note { font-size: 32px; line-height: 1.35; color: #3D4A63; padding-top: 32px; }
+table.wide { font-size: 26px; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; padding-top: 44px; }
+.grid2 .card { padding: 32px 36px; gap: 12px; }
+.grid2 .card .body { font-size: 30px; }
+.stack { display: flex; flex-direction: column; gap: 20px; padding-top: 32px; }
+.stack .row { display: flex; gap: 20px; }
+.stack .card { padding: 24px 36px; gap: 10px; }
