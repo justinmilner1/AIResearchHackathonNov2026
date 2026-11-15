@@ -4,37 +4,105 @@
     {
       "title": "1. Lowering the learning rate trades learning for retention, and the trade has a floor",
       "text": "The agents started from the grid's main result, that a lower learning rate beats every technique. Going lower still kept more of the old knowledge and learned the legal text less, as the agent predicted before the run. An intermediate rate, re-warming, and replay at the low rate each moved retention in the helpful direction but not past the noise threshold. Reading: the learning rate sets a point on a trade-off curve; it does not remove the conflict.",
-      "hypotheses": ["justin:h002", "justin:h007", "justin:h003", "justin:h046", "justin:h047"]
+      "hypotheses": [
+        "justin:h002",
+        "justin:h007",
+        "justin:h003",
+        "justin:h046",
+        "justin:h047"
+      ]
     },
     {
       "title": "2. Averaging the weights helps even at a low learning rate, at a small cost in learning",
       "text": "A moving average of the weights at the low learning rate, with nothing frozen, forgot less than the plain low-rate run. A faster-tracking average gave some of that back. In peter's second instance, pulling harder toward the base model after freezing the bottom six blocks kept more, and pulling harder again kept more of the fragile core but learned legal worse than the margin allows. Reading: part of the forgetting is where the run ends up, not only how far it travelled, and averaging buys retention with learning.",
-      "hypotheses": ["justin:h008", "justin:h010", "justin:h012", "peter2:h007", "peter2:h013", "peter2:h003", "peter2:h008"]
+      "hypotheses": [
+        "justin:h008",
+        "justin:h010",
+        "justin:h012",
+        "peter2:h007",
+        "peter2:h013",
+        "peter2:h003",
+        "peter2:h008"
+      ]
     },
     {
-      "title": "3. The damage sits in the MLP blocks, and so does the new learning",
-      "text": "With the top half and the embeddings frozen, an agent-written technique that also protected the MLP projections kept far more of the fragile core than the same setup with the MLPs free; protecting attention instead did not. Undoing only the legal-stage MLP changes after training also recovered the core, but the model then no longer knew the legal text. Peter's second instance found the same from another direction: restoring only the lower MLP output projections, at a matched distance from the base model, lost less of the core than shrinking every weight equally. Reading: old knowledge and new learning compete inside the same MLP weights, which is why protection there costs learning. Moving frozen blocks from the lower-middle of the model to the top lost more of the core, which points at the same region.",
-      "hypotheses": ["justin:h034", "justin:h038", "justin:h052", "justin:h042", "peter2:h018", "peter2:h015", "peter2:h016", "justin:h025", "justin:h026"]
+      "title": "3. More forgetting when the MLP blocks train, but not shown to be about the MLPs",
+      "text": "With the top half and the embeddings frozen, an agent-written technique that also protected the MLP projections kept far more of the fragile core than the same setup with the MLPs free; protecting attention instead did not, and that contrast replicated. But protecting the MLPs removes most of the trainable weights and the model learns legal less. The agent's skeptic step tested the cheaper explanation: plain slower training with the same blocks frozen and no MLP-specific step lost fewer fragile questions than either MLP intervention, while learning legal better. Reading: how much the model adapts explains this protection at least as well as where it adapts. Whether the damage sits in particular layers is open, and needs arms matched on how much they learn.",
+      "hypotheses": [
+        "justin:h034",
+        "justin:h038",
+        "justin:h052",
+        "justin:h060",
+        "justin:h062",
+        "justin:h042",
+        "peter2:h018",
+        "peter2:h015",
+        "peter2:h016",
+        "justin:h025",
+        "justin:h026"
+      ]
     },
     {
       "title": "4. Separate adapter weights protect the fragile core where a training constraint alone does not",
       "text": "Distilling toward the base model on top of LoRA lost less of the core than LoRA alone, at some cost in learning. The same distillation on full-weight training, which reached the same legal perplexity, lost far more of the core; turning the distillation weight up helped but cost learning. Adding adapters under a frozen top half also kept more of the core than training those blocks directly. Reading: at matched learning of the new domain, putting the new knowledge in its own parameters protects the old knowledge in a way a functional constraint on the shared weights does not. Caveat: the fragile core is defined by full-weight runs at this learning rate, so full-weight arms at that rate are measured on questions chosen to be hard for them.",
-      "hypotheses": ["justin:h015", "justin:h033", "justin:h035", "justin:h023", "justin:h024", "justin:h043", "justin:h016", "justin:h017", "justin:h045", "justin:h049", "justin:h053"]
+      "hypotheses": [
+        "justin:h015",
+        "justin:h033",
+        "justin:h035",
+        "justin:h023",
+        "justin:h024",
+        "justin:h043",
+        "justin:h016",
+        "justin:h017",
+        "justin:h045",
+        "justin:h049",
+        "justin:h053",
+        "justin:h064"
+      ]
     },
     {
       "title": "5. No support for the idea that only the readout drifted",
       "text": "If the knowledge were intact inside the model and only the last layers or the output matrix had moved, restoring or freezing those parts should recover it. Restoring the last blocks, restoring the output matrix, freezing the embedding and output matrix, and moving the frozen half from the top to the bottom all left the fragile core about where it was. None cleared the threshold, so these are absences of evidence at two seeds, not refutations.",
-      "hypotheses": ["justin:h013", "justin:h014", "justin:h022", "justin:h021", "justin:h027", "justin:h019", "justin:h040"]
+      "hypotheses": [
+        "justin:h013",
+        "justin:h014",
+        "justin:h022",
+        "justin:h021",
+        "justin:h027",
+        "justin:h019",
+        "justin:h040"
+      ]
     },
     {
       "title": "6. LoRA rank and learning rate (peter's first instance)",
       "text": "Peter's first instance varied adapter rank, adapter learning rate and several agent-written reshapings of the adapter update. Nothing cleared the threshold at two seeds. Lower ranks learned legal less at the same adapter learning rate.",
-      "hypotheses": ["peter:h001", "peter:h002", "peter:h003", "peter:h006", "peter:h005", "peter:h007", "peter:h008", "peter:h009", "peter:h010"]
+      "hypotheses": [
+        "peter:h001",
+        "peter:h002",
+        "peter:h003",
+        "peter:h006",
+        "peter:h005",
+        "peter:h007",
+        "peter:h008",
+        "peter:h009",
+        "peter:h010"
+      ]
     },
     {
       "title": "7. Ideas that did not work",
       "text": "Kept because a failed idea is a result too. Smoothing the optimizer's updates over time made forgetting clearly worse and stopped the model learning legal. Freezing normalization gains, freezing the attention query and key projections, damping updates to tokens absent from the batch, projecting updates away from the code-stage direction, and choosing replay examples by loss or novelty each made no detectable difference.",
-      "hypotheses": ["justin:h011", "justin:h005", "justin:h006", "justin:h009", "justin:h048", "justin:h041", "justin:h044", "justin:h051", "justin:h054", "justin:h037"]
+      "hypotheses": [
+        "justin:h011",
+        "justin:h005",
+        "justin:h006",
+        "justin:h009",
+        "justin:h048",
+        "justin:h041",
+        "justin:h044",
+        "justin:h051",
+        "justin:h054",
+        "justin:h037"
+      ]
     }
   ]
 }

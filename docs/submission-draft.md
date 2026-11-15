@@ -58,21 +58,24 @@ What we found:
   (95% CI 1.5 to 5.4). So replay alone did not help here either. With so little to recover,
   the pre-registered "gap closed" (−1.4, 95% CI −5.5 to +0.5) is unstable and is not a
   finding on its own.
-- Overnight, three instances of the research agent proposed 89 hypotheses from the results, each
-  with a prediction written before its runs. Code refused 6, 158 full runs tested the rest at two
-  seeds, and a fixed rule gave the verdicts: 10 confirmed, 5 confirmed at a cost in learning, 2
-  refuted, 62 inconclusive (4 were still running at this count). 30 of the tested configurations
-  were techniques the agent wrote itself. All of it is exploratory. The clearest leads:
-  - Giving the new domain its own adapter weights protects old knowledge where a training
-    constraint alone does not. Distillation with LoRA lost 15% of the 58 most fragile questions;
-    the same distillation on full-weight training lost 69%, at the same legal perplexity (0.810
-    and 0.808).
-  - The damage sits in the MLP blocks, and so does the new learning. An agent-written technique
-    that protected them lost 23% of the fragile questions against 53% for its control; protecting
-    attention instead lost 55%. Undoing only the legal-stage MLP changes recovered the questions
-    but also undid the legal learning (perplexity ratio 1.067).
-  - A lower learning rate has a floor: at 1e-5 the model forgets 1.8 points less than at 3e-5 but
-    learns the legal text less, as the agent predicted.
+- Four instances of the research agent proposed 108 hypotheses from the results, each with a
+  prediction written before its runs. Code refused 14, 208 full runs tested the rest at two
+  seeds, and a fixed rule gave the verdicts. 32 of the tested configurations were techniques the
+  agent wrote itself. On Sunday morning a skeptic step re-ran one instance's confirmed results at
+  two more seeds and tested the cheapest alternative explanation for each: nine held at four
+  seeds and two were challenged by the agent's own checks. All of it is exploratory. What it
+  leaves:
+  - A lead that held at four seeds: giving the new domain its own adapter weights protects old
+    knowledge where a training constraint alone does not. Distillation with LoRA lost 15% of the
+    58 most fragile questions; the same distillation on full-weight training lost 69%, at the
+    same legal perplexity (0.810 and 0.808).
+  - A story the agent knocked down itself. Overnight it concluded that the damage sits in the
+    MLP blocks: a technique it wrote to protect them lost 23% of the fragile questions against
+    53% for its control. Its skeptic check then showed that plain slower training, with no MLP
+    step, lost 14% while learning legal better (ratio 0.851 against 0.878). So that protection
+    came from adapting less, and where the damage sits is still open.
+  - A lower learning rate has a floor: at 1e-5 the model forgets 1.4 points less than at 3e-5
+    over four seeds but learns the legal text less, as the agent predicted.
 
 Everything reported rebuilds from committed result rows with `make reproduce`.
 
@@ -97,7 +100,7 @@ So that nothing in it is typed from memory. Check each against its file before s
 | Best configuration at lr 3e-5 (follow-up, exploratory, not pre-registered) | vs no mitigation at 3e-5, 3 paired seeds, item bootstrap: report half +1.33 points (95% CI +0.10 to +2.63), selection half +1.77 (+0.73 to +2.80); legal perplexity ratio 0.816 vs 0.754 (fails the 1.05 acquisition margin; code 0.990 vs 1.027 passes) | `results/rows.followup.jsonl`, specs in `configs/bench/specs/followup/`; `attribution.paired_bootstrap` |
 | Published claims | 6 tested: 2 reproduced, 1 in part, 3 not; claim 4 not tested (no Reptile plugin) | `results/analysis/grid_analysis.md`, "Published claims" |
 | Second task sequence (C5, Tinker, exploratory) | Qwen3-8B, LoRA rank 32, SST-2 → MNLI → AG News, 3 seeds per arm. Average forgetting: naive 1.8 points (95% CI 1.0 to 2.9), replay-200 3.2 (1.5 to 5.4), joint 0.0. Final average accuracy: 0.896 / 0.882 / 0.908. Gap closed by replay-200 −1.40 (−5.48 to +0.48), with the section 10 warning: joint − naive = 0.012 < 0.03. $8.57 estimated for the 9 runs (`est_usd`; a first attempt that stalled in a network outage is not counted). The top-2 technique arms were dropped before any C5 result (amendment 7) | `results/tinker/analysis.md`, `results/tinker/rows.jsonl`; rebuild with `clh tinker-analyze` |
-| Research agent overnight | 3 instances (justin, peter, peter2), 89 hypotheses: 6 refused by the code gate, 10 confirmed, 5 confirmed with cost (held, but learned legal more than 5% worse than the control), 2 refuted, 62 inconclusive, 4 still running. 158 full runs at 2 seeds, none failed, about $235 by the rows' estimates. 34 agent-written techniques proposed, 30 passed the three checks and ran. Leads: justin h033 (core lost 69% vs 15%, legal ratio 0.808 vs 0.810), h034 (23% vs 53%, legal 0.878 vs 0.812), h038 (55% vs 23%), h052 (28% vs 53%, legal 1.067 vs 0.812), h002 (+1.8 points, threshold 1.2, legal 0.777 vs 0.754). Selection half; exploratory | `results/agent/explore_summary.md`, rebuilt by `python -m clharness.agent.explore_summary` from `results/agent/explore-*/hypotheses.jsonl` and `rows.jsonl` (as of commit 3d911ce; rerun it if more explore rows are pushed, and recopy these numbers) |
+| Research agent, all instances | 4 instances (himani, justin, peter, peter2), 108 hypotheses: 14 refused by the code gate, 14 confirmed, 6 confirmed with cost (held, but learned legal more than 5% worse than the control), 4 refuted, 64 inconclusive, 5 still marked running. 208 full runs finished and 1 failed, about $306 by the rows' estimates. 41 agent-written techniques proposed, 32 passed the three checks and ran. Skeptic run (instance justin): 9 results replicated at seeds 0 to 3 (h002, h008, h015, h023, h024, h025, h033, h034, h038); 2 challenged by a skeptic check (h034 by h062, h035 by h064). h033: core lost 69% vs 15%, effect −55.2 points over 4 seeds (threshold 9.2), legal ratio 0.808 vs 0.810. h034: 23% vs 53%, legal 0.878 vs 0.812; its check h062: 14% vs 23%, legal 0.851 vs 0.878 (2 seeds). h002: +1.4 points over 4 seeds (threshold 0.8), legal 0.777 vs 0.754. Raw confirmation counts shifted under stricter rules and are not a result. Selection half; exploratory | `results/agent/explore_summary.md`, rebuilt by `python -m clharness.agent.explore_summary` from `results/agent/explore-*/hypotheses.jsonl` and `rows.jsonl` (as of commit be76eff). Reading and caveats: `docs/analysis-report.md` |
 | Research agent with Exa in the loop (instance himani, Sunday morning, exploratory) | 4 cycles, 13 hypotheses, 23 runs at lr 3e-5 vs no mitigation at 3e-5 ($30 cap reached): freezing the bottom 13 blocks cut fragile-core forgetting by 17.2 points, replicated at 4 seeds, legal learning kept (h004); freezing the top 4 blocks + embeddings did not replicate (h003); distillation cut it 18.1 points but learned legal worse (h009); the method built from an Exa-found paper (h007) was inconclusive (+4.3, threshold 13.1). 14 Exa calls: 8 prior-work answers with 64 citations, 3 agent-chosen searches. 2 runs failed and are kept as rows (a GPU-probe device error; an OSError) | `results/agent/explore-himani/`, `results/agent/exa_trail.md`, `results/agent/ablation/` |
 
 The pre-registered win rule cannot be met on this bench: a technique would have to beat the
@@ -112,7 +115,7 @@ differences and intervals, never as "no technique helps".
 | Research rigour | Frozen bench; noise floor from 5 seeds; pre-registration with a logged amendment history; a published reference arm and lower-learning-rate controls; selection and report halves of the eval items kept apart; three rounds of independent review with the fixes in git |
 | Novelty | All techniques under one protocol at matched compute; a table of published claims tested for reproduction; the finding that learning rate dominates and that the published recipe is partly a learning-rate cut |
 | Results | The control table above; the confirmatory table (best configuration +2.1 points over the published recipe, level with the lower-learning-rate control); the claims table (2 of 6 reproduced, 1 in part); the second task sequence on Tinker (replay-200 did not reduce forgetting). Live results page |
-| Autonomy and self-improvement | The launcher runs the pre-registered grid unattended and resumably; the explore loop proposes hypotheses from results, a code gate accepts or refuses them, and verdicts feed the next cycle. Be exact: tonight's screen was launched by a deterministic launcher on a person's go, and the Conductor reads real data but launches nothing. Overnight three instances of the explore loop proposed 89 hypotheses; the code gate refused 6 and a fixed rule gave every verdict (10 confirmed, 5 confirmed with cost, 2 refuted, 62 inconclusive). The agent wrote 34 techniques of its own; 30 passed a syntax allow-list, a tiny-model check and a four-step GPU run, and were tested. Later cycles built on earlier verdicts: see the themes in `results/agent/explore_summary.md` |
+| Autonomy and self-improvement | The launcher runs the pre-registered grid unattended and resumably; the explore loop proposes hypotheses from results, a code gate accepts or refuses them, and verdicts feed the next cycle. Be exact: tonight's screen was launched by a deterministic launcher on a person's go, and the Conductor reads real data but launches nothing. Four instances of the explore loop proposed 108 hypotheses; the code gate refused 14 and a fixed rule gave every verdict. The agent wrote 41 techniques of its own; 32 passed a syntax allow-list, a tiny-model check and a four-step GPU run, and were tested. With the skeptic step on, it re-ran its confirmed results at two more seeds and tested the cheapest alternative explanation: 9 held, and 2 were challenged, including its own overnight conclusion that the damage sits in the MLP blocks. See `results/agent/explore_summary.md` and `docs/analysis-report.md` |
 | Interpretability and reproducibility | Hash-chained decision log; every row carries its spec, commit and cost; failed and invalid runs are rows too; `make reproduce`; this honest limits list |
 
 ## Sponsor challenges
@@ -157,7 +160,7 @@ differences and intervals, never as "no technique helps".
 | 0:15 to 0:40 | Terminal: the launcher's dry run, then the decision log scrolling, then the Modal dashboard with 10 GPUs | One command launches the pre-registered grid on Modal. Every wave and every row is logged in a hash-chained file. It resumes if interrupted and stops at a budget cap |
 | 0:40 to 1:05 | Results page: the runs table with the per-domain perplexity columns, then the frontier figure | What each configuration kept and what it learned. The controls: no mitigation loses 6.4 points, the published recipe 3.1, a lower learning rate 1.1 |
 | 1:05 to 1:25 | The claims figure or table | We tested six published claims on the same bench: two reproduced, one in part, three did not |
-| 1:25 to 1:45 | Results page, section "What the research agents found": the totals row, then themes 3 and 4 | Overnight the research agent proposed 89 hypotheses, each with a prediction made before the run. Code decides what runs and code gives the verdict. It wrote 30 techniques of its own that passed the checks. Its clearest lead: the forgetting sits in the MLP blocks, and separate adapter weights protect what a training constraint alone does not |
+| 1:25 to 1:45 | Results page, section "What the research agents found": the totals row, then themes 4 and 3 | The research agent proposed 108 hypotheses, each with a prediction made before the run. Code decides what runs and code gives the verdict. It wrote 32 techniques of its own that passed the checks. Then it doubted itself: one lead held at four seeds, that separate adapter weights protect what a training constraint alone does not, and it knocked down its own story that the damage sits in the MLP blocks |
 | 1:45 to 2:00 | `make reproduce` finishing; the limits list | Everything rebuilds from committed rows in seconds. One small model, a short stream: here is what we do not claim |
 
 Record the screen segments on Sunday morning once the page shows real results. The first 40
