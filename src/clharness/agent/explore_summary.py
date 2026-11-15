@@ -86,7 +86,7 @@ def load_instance(folder: Path) -> dict[str, Any]:
 def record(h: explore.Hypothesis, arms: Sequence[explore.Arm]) -> dict[str, Any]:
     """One hypothesis with what its two arms measured, looked up by the spec hashes it stored."""
     test, control = _arm_for(h.test_spec_hashes, arms), _arm_for(h.control_spec_hashes, arms)
-    if control is None:
+    if control is None and not h.control_spec_hashes:  # legacy record: no stored hashes to go by
         control = next((a for a in arms if a.name == h.control), None)
 
     def read(arm: explore.Arm | None, hashes: Sequence[str]) -> dict[str, float | None]:

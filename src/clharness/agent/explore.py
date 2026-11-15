@@ -708,7 +708,7 @@ def resolve_one(h: Hypothesis, arms: Sequence[Arm], sd_points: float | None) -> 
     outcome a positive effect means the test arm forgot less than its control."""
     by_hash = {hash_: (arm, seed) for arm in arms for seed, hash_ in arm.hashes_by_seed.items()}
     test = [by_hash[x] for x in h.test_spec_hashes if x in by_hash]
-    control = next((a for a in arms if a.name == h.control), None)
+    control = _control_arm(h, arms)
     items = h.outcome != "retention"
     if len(test) < len(h.test_spec_hashes) or control is None or (sd_points is None and not items):
         missing = "rows not in yet" if len(test) < len(h.test_spec_hashes) else "control or noise floor missing"
@@ -779,6 +779,13 @@ def _test_arm(h: Hypothesis, arms: Sequence[Arm]) -> Arm | None:
 
 
 def _control_arm(h: Hypothesis, arms: Sequence[Arm]) -> Arm | None:
+    """The control by the spec hashes the gate stored. An arm name is made up per read_arms call
+    (primes in first-seen order across the rows files read), so a stored name can point at a
+    different arm in a later table. Stored hashes that match no arm mean the control is missing,
+    never a name fallback; only records without control hashes (legacy, rejected) use the name."""
+    if h.control_spec_hashes:
+        want = set(h.control_spec_hashes)
+        return next((a for a in arms if want & set(a.hashes_by_seed.values())), None)
     return next((a for a in arms if a.name == h.control), None)
 
 
@@ -900,9 +907,10 @@ def skeptic_prompt(arms: Sequence[Arm], targets: Sequence[Hypothesis]) -> str:
     def legal(arm: Arm | None) -> float | None:
         return round(statistics.mean(arm.legal_ratio_by_seed.values()), 3) if arm and arm.legal_ratio_by_seed else None
 
-    results = [{"id": h.id, "status": h.status, "claim": h.claim, "control": h.control, "outcome": h.outcome,
+    results = [{"id": h.id, "status": h.status, "claim": h.claim,
+                "control": ctl.name if (ctl := _control_arm(h, arms)) else h.control, "outcome": h.outcome,
                 "replicated": h.replicated, "effect_points": h.effect_points, "threshold_points": h.threshold_points,
-                "legal_ratio_test": legal(_test_arm(h, arms)), "legal_ratio_control": legal(_control_arm(h, arms)),
+                "legal_ratio_test": legal(_test_arm(h, arms)), "legal_ratio_control": legal(ctl),
                 "verdict_note": h.reason} for h in targets]
     ranges = json.dumps({t: {p: list(v) for p, v in ps.items()} for t, ps in RANGES.items()})
     return "\n\n".join([
