@@ -3,7 +3,7 @@
 This repository is a continual-learning test bench: a small language model is trained on a
 stream of domains while a fixed eval suite measures what it forgets, and a research agent
 proposes, gates and launches the experiments itself. Exa is the agent's only access to
-published work, and it is in the main loop, not a side tool: a Scout step finds methods the
+the live web, and it is in the main loop, not a side tool: a Scout step finds methods the
 agent was not told about and the proposer may rebuild one as new plugin code; every
 hypothesis the gate accepts gets an `answer` call asking whether it was already tested,
 before any GPU time is spent; and after each cycle the model names the one search it wants
@@ -22,7 +22,7 @@ All Exa calls go through `src/clharness/agent/search.py`, the only module that r
 | `ExaSearch.search` | `explore.py` `_search_sources` | The `--search` argument, and `run_next_search`, which runs the one search the model chose after a cycle (`next_search.json` → `sources.jsonl`) |
 | `ExaSearch.answer` | `explore.py` `ask_prior_work` | One grounded answer with citations per accepted hypothesis, before compute is spent; stored on the hypothesis as `prior_work`. Informational, never a gate |
 | `ExaSearch.answer` | `agent/exa_check.py` (`clh exa-check`) | The same prior-work call, run live on one claim for the demo |
-| `ExaSearch.find_similar` | the explore cycle | Pages like a paper on other sites, run on the source paper of each accepted `literature` hypothesis (`Hypothesis.similar`) |
+| `ExaSearch.find_similar` | the explore cycle | Pages like a paper on other sites, run on the source paper of each accepted `literature` hypothesis (`Hypothesis.similar`). Added in #24; no paper-sourced hypothesis was accepted after it landed, so no call is on record yet |
 
 ## The loop
 
@@ -61,13 +61,40 @@ All Exa calls go through `src/clharness/agent/search.py`, the only module that r
 
 ## Without search
 
-TO FILL (himani): the ablation — what the loop proposed and ran with the search step off
-against with it on.
+What the loop could and could not do without Exa, from the committed files:
+
+| Without Exa, the loop has no... | Evidence with Exa (instance himani, 4 cycles) |
+|---|---|
+| Methods from papers it was not given | The Scout's 3 searches returned 24 sources; 2 candidates came from 2025-2026 papers (SCALE, "When to Review"). The agent built 3 techniques from Exa-found papers; one (h007, from "Revisiting Replay and Gradient Alignment") passed all three checks and ran: inconclusive |
+| Prior-work verdicts before compute | 8 answers, 64 citations, newest August 2026 (table below) |
+| Searches of its own | 3 searches the model chose after a cycle, run at the next cycle's start, 30 URLs returned |
+
+A controlled ablation of the proposer alone (`results/agent/ablation/`, dry runs, 3 with and 3
+without the Scout's Exa material, from the cycle history and from a fresh start, same focus):
+with a neutral focus the proposer built **0 of 12** hypotheses from the papers in either
+condition. It used the papers when its focus asked it to, as in the live cycles. So Exa's
+effect on what gets proposed depends on the instruction; its effect on what is known before
+a run (the prior-work answers) and on what the agent reads next (its own searches) does not.
 
 ## Prior work
 
-TO FILL (himani): the tally of what the prior-work answers said across accepted hypotheses
-(already tested / partially / not found), with the citations.
+What Exa answered, before any GPU time, for each accepted hypothesis (8 citations each; full
+answers and URLs in `results/agent/exa_trail.md`):
+
+| Hypothesis | What it tested | Exa said | Run verdict |
+|---|---|---|---|
+| h002 | spaced-repetition code review (agent-written, from an Aug 2026 paper) | not specifically tested | refused by the GPU probe |
+| h003 | freeze top 4 blocks + embeddings | not tested at this granularity | did not replicate |
+| h004 | freeze bottom 13 blocks | not tested at 13 blocks; bottom-layer freezing known to help | **confirmed, replicated at 4 seeds** |
+| h005 | final weight averaging | related work exists | refuted (it did protect) |
+| h006 | embedding-only freezing (skeptic check) | related freeze experiments exist | confirmed, replicated |
+| h007 | half-space projection (agent-written, from a 2025 paper) | no published validation of this surrogate | inconclusive |
+| h009 | distillation | closely related methods tested | confirmed with cost (learns less) |
+| h010 | lr 1e-5 vs distillation (skeptic check) | not directly tested | inconclusive (a run failed) |
+
+5 of 8 were new as stated; 3 had related published work. The live demo below shows the same
+call on the bench's strongest finding: Exa returns published work that freezing bottom layers
+reduces forgetting, which the agent's replicated h004 agrees with.
 
 ## Live demo (60 s)
 

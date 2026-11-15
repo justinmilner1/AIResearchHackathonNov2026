@@ -8,8 +8,11 @@ any compute is spent (explore.py `ask_prior_work` -> `ExaSearch.answer`): one Ex
 call, a short grounded answer with its citations. The loop stores the record on the
 hypothesis as `prior_work`; here it is printed so a person can watch the check happen.
 
-Everything printed came back from the web: it is escaped with the same rules as trail.py
-(no raw `<`/`>`, `[`/`]` or `&`), truncated, and only the recorded URL is shown. The key is
+Everything printed came back from the web and goes to a terminal: control characters and
+ANSI escape sequences (which could rewrite the screen) are removed, whitespace is collapsed,
+text is truncated, and a URL is shown only when it is plain http(s). Brackets and `<`/`>` are
+left readable, since a terminal does not render them (the Markdown trail in trail.py escapes
+them instead). The key is
 read from `EXA_API_KEY` inside search.py and is never printed. A failing search prints the
 error and exits 1.
 """
@@ -24,23 +27,24 @@ from typing import Any
 
 from .explore import Citation, PriorWork, ask_prior_work
 
-# Untrusted-text rules, copied from trail.py (`_esc`, `_link`, `_paper`): web text is quoted
-# as data, escaped and truncated, and a URL is shown as a link only when it is plain http(s).
+# Untrusted-text rules for a terminal: strip ANSI escape sequences and other control
+# characters, collapse whitespace, truncate; a URL is shown only when it is plain http(s).
 _URL_OK = re.compile(r"^https?://[^\s()\[\]<>'\"]+$", re.IGNORECASE)
+_ANSI = re.compile(r"\x1b\[[0-?]*[ -/]*[@-~]|\x1b[@-_]")
+_CONTROL = re.compile(r"[\x00-\x08\x0b-\x1f\x7f-\x9f]")
 INLINE_LIMIT = 500
 ANSWER_LIMIT = 1200
 
 
 def _esc(text: Any, limit: int = INLINE_LIMIT) -> str:
-    flat = " ".join(str(text).split())
-    s = flat[:limit] + ("…" if len(flat) > limit else "")
-    return (s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-             .replace("[", "&#91;").replace("]", "&#93;"))
+    clean = _CONTROL.sub("", _ANSI.sub("", str(text)))
+    flat = " ".join(clean.split())
+    return flat[:limit] + ("…" if len(flat) > limit else "")
 
 
 def _link(url: Any) -> str:
     url = str(url).strip()
-    return f"<{url}>" if _URL_OK.match(url) else f"`{_esc(url)}`"
+    return url if _URL_OK.match(url) else f"(unsafe link omitted: {_esc(url, 80)})"
 
 
 def _citation(c: Citation) -> str:

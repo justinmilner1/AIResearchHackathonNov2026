@@ -15,7 +15,7 @@ def _sources() -> list[Source]:
     now = "2026-11-15T00:00:00+00:00"
     return [
         Source(id="src-1", query="q", url="https://arxiv.org/abs/2608.00007",
-               title="Replay <img> [paper]", snippet="", published="2026-08-01",
+               title="Replay \x1b[31m<img> [paper]\x07", snippet="", published="2026-08-01",
                retrieved_at=now),
         Source(id="src-2", query="q", url="https://example.org/lr-sweeps",
                title="Learning-rate sweeps", snippet="", published=None, retrieved_at=now),
@@ -44,11 +44,14 @@ def test_prints_the_question_answer_and_numbered_citations(capsys):
     assert [call[1] for call in fake.calls] == ["answer", "answer"]
 
 
-def test_untrusted_web_text_is_escaped(capsys):
+def test_untrusted_web_text_cannot_drive_the_terminal(capsys):
+    """Web text goes to a terminal: escape sequences and control characters are removed,
+    brackets stay readable (the citation markers [1][2] in an answer)."""
     assert exa_check.main([CLAIM], answer=_fake().answer) == 0
     out = capsys.readouterr().out
-    assert "<img>" not in out and "&lt;img&gt;" in out
-    assert "[paper]" not in out and "&#91;paper&#93;" in out
+    assert "\x1b" not in out and "\x07" not in out
+    assert "Replay <img> [paper]" in out
+    assert "&#91;" not in out and "&lt;" not in out
 
 
 def test_a_failing_search_prints_the_error_and_exits_1(capsys):
