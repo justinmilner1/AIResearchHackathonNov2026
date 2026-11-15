@@ -81,6 +81,19 @@ table.wide { font-size: 26px; }
 .aux { padding-top: 20px; }
 .aux .fbox { padding: 18px 26px; gap: 6px; }
 img.diagram { align-self: center; margin-top: 24px; border-radius: 16px; }
+.dloop { border: 3px dashed #CFC8B8; border-radius: 28px; padding: 20px 28px 26px; margin-top: 20px; display: flex; flex-direction: column; gap: 12px; }
+.dlabel { font-size: 24px; color: #6B7689; }
+.dgrid { display: grid; grid-template-columns: 1fr 56px 1fr 56px 1fr 56px 1fr; gap: 6px 10px; align-items: stretch; }
+.dbox { background: #FFFDF8; border: 2px solid #D9D2C2; border-radius: 16px; padding: 24px 12px; display: flex; flex-direction: column; gap: 6px; align-items: center; }
+.dbox h3 { font-size: 34px; text-align: center; }
+.dbox .body { font-size: 24px; line-height: 1.3; color: #5B6577; text-align: center; }
+.dbox.exa { background: #E0F3EC; border: 2px solid #2F8F6B; }
+.dbox.exa h3 { color: #1F6B4F; }
+.dbox.exa .body { color: #1F6B4F; }
+.dbox.wide3 { grid-column: 5 / 8; }
+.darrow { font-size: 40px; line-height: 1; color: #8A8474; text-align: center; align-self: center; }
+.dsupport { display: flex; gap: 20px; padding-top: 20px; }
+.dsupport .dbox { flex: 1; }
 </style></head><body>
 <section id="cover" class="dark" data-transition="fade">
 <p class="eyebrow">Iterate SF AI Research Hackathon · Autoresearch / Open Track</p>
@@ -192,14 +205,35 @@ img.diagram { align-self: center; margin-top: 24px; border-radius: 16px; }
 <aside>Twenty-five seconds. On the grid, we screened fourteen combinations of the six techniques, chosen so each technique's effect can be separated. A dot means the technique is switched on. Most combinations kept old knowledge well, but only two also kept learning the new domain within our pre-registered margin; the rest protected old knowledge by learning less. We replicated the best at three seeds: it beats the published recipe by 2.1 points and is level with lowering the learning rate alone. So nothing met the win rule we pre-registered, and we report that as the result.</aside>
 </section>
 
-<section id="agent" data-transition="fade" data-flat style="display:flex; flex-direction:column; padding:128px 128px 160px; background:#faf7f1">
-  <p style="flex:0 0 auto; padding:0 0 24px; font-family:Inter, Arial, sans-serif; font-size:24px; font-weight:600; line-height:1.4; letter-spacing:3px; text-transform:uppercase; color:#c2410c">Phase 2: the research agent</p>
-  <h2 style="flex:0 0 auto; font-family:'Space Grotesk', Arial, sans-serif; font-size:72px; font-weight:600; line-height:1.1; letter-spacing:-1px; color:#17223b">How the research agent works.</h2>
-  <div style="display:flex; flex-direction:column; flex:0 0 auto; align-self:center; padding:24px 0 0">
-    <img src="assets/agent-diagram.webp" alt="The research agent loop, running unattended: Exa finds sources; an OpenAI model proposes hypotheses and code; a code gate runs static, tiny-model and GPU checks; Exa checks prior work; Modal runs the experiments on H100s at two or more seeds; a rule and a skeptic give the verdict; Exa runs the agent's next query, and the loop repeats. Beside the loop: the frozen bench on Gemma 3 1B with its pre-registration, the Tinker second task sequence on Qwen3-8B LoRA, an evidence trail of Exa URLs, and pas" style="width:1190px; height:813px; flex:0 0 auto; border-radius:16px; object-fit:contain; transform:translate(-63px, -86px)">
-  </div>
-  <p style="position:absolute; bottom:64px; left:128px; width:1664px; font-family:Inter, Arial, sans-serif; font-size:24px; line-height:1.4; color:#6b7689">Grounding: a second task sequence on Tinker (Qwen3-8B, LoRA) checks the bench on another model · src/clharness/agent/explore.py</p>
-  <aside>Twenty seconds. The research agent runs a loop, unattended. Exa finds published sources. An OpenAI model proposes a hypothesis, with its prediction, and sometimes its own technique as code. A code gate decides what may run, with a static check, a tiny-model check and a short GPU probe. Exa checks whether the idea has already been tested. The runs go out on Modal. A fixed rule gives the verdict, and the skeptic, our critic, re-runs what held and tests the cheapest alternative explanation. Then the agent chooses its own next search and the loop repeats. Beside the loop: the frozen bench, past.dev as shared memory between agent instances, an evidence trail of every source, and, as grounding, a second task sequence on Tinker with a different model.</aside>
+<section id="agent" data-transition="fade">
+<p class="eyebrow">Phase 2: the research agent</p>
+<h2>How the research agent works.</h2>
+<div class="dloop">
+<p class="dlabel">Research agent loop, runs unattended</p>
+<div class="dgrid">
+<div class="dbox exa"><h3>Exa: find</h3><p class="body">Published sources</p></div>
+<p class="darrow">→</p>
+<div class="dbox"><h3>OpenAI: propose</h3><p class="body">Hypotheses + code</p></div>
+<p class="darrow">→</p>
+<div class="dbox"><h3>Code gate</h3><p class="body">Static, tiny, GPU</p></div>
+<p class="darrow">→</p>
+<div class="dbox exa"><h3>Exa: prior work</h3><p class="body">Answer with citations</p></div>
+<p class="darrow">↑</p><p class="darrow"></p><p class="darrow"></p><p class="darrow"></p><p class="darrow"></p><p class="darrow"></p><p class="darrow">↓</p>
+<div class="dbox exa"><h3>Exa: next query</h3><p class="body">3 searches of its own</p></div>
+<p class="darrow">←</p>
+<div class="dbox"><h3>Verdict</h3><p class="body">Rule + skeptic</p></div>
+<p class="darrow">←</p>
+<div class="dbox wide3"><h3>Modal: run</h3><p class="body">H100s, 2+ seeds against a control</p></div>
+</div>
+</div>
+<div class="dsupport">
+<div class="dbox"><h3>Frozen bench</h3><p class="body">Gemma 3 1B, pre-registered</p></div>
+<div class="dbox"><h3>Tinker: grounding</h3><p class="body">Qwen3-8B LoRA, second sequence</p></div>
+<div class="dbox exa"><h3>Evidence</h3><p class="body">exa_trail.md, 76 URLs</p></div>
+<div class="dbox"><h3>past.dev</h3><p class="body">Shared memory</p></div>
+</div>
+<p class="foot">Green: an Exa API call in the main loop (search, answer, find similar) · results/agent/exa_trail.md · src/clharness/agent/explore.py</p>
+<aside>Twenty seconds. The research agent runs a loop, unattended. Exa finds published sources. An OpenAI model proposes a hypothesis, with its prediction, and sometimes its own technique as code. A code gate decides what may run, with a static check, a tiny-model check and a short GPU probe. Exa checks whether the idea has already been tested. The runs go out on Modal. A fixed rule gives the verdict, and the skeptic, our critic, re-runs what held and tests the cheapest alternative explanation. Then the agent chooses its own next search and the loop repeats. Under the loop: the frozen bench, a second task sequence on Tinker with a different model as grounding, an evidence trail of every source, and past.dev as shared memory between agent instances.</aside>
 </section>
 
 <section id="agentstats" class="dark" data-transition="fade">

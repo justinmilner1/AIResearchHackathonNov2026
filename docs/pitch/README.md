@@ -13,4 +13,4 @@ agent). The reading behind the slides is `docs/analysis-report.md`.
 `slides.html` is built by concatenating the slide files with the stylesheet. If a slide changes,
 rebuild it the same way.
 
-`assets/agent-diagram.webp` is the research-agent diagram on slide 9. In the live deck the slide loads it from the deck's own store; the copies here point at this file.
+`assets/agent-diagram.webp` is the diagram that slide 9 was redrawn from; the slide itself is built from boxes, not the image.
